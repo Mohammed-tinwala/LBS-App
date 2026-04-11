@@ -7,7 +7,7 @@ const HomeHeader = ({ name = "Rohan Sharma" }) => {
             <div className="flex items-center gap-3">
                 <div className="w-13.75 h-13.75 p-2 overflow-hidden rounded-full flex-center 
                                 bg-[radial-gradient(circle,#E3D1FB,#9768D9)]">
-                    <img src="/images/profile.png" className="w-13.75 object-cover" alt="profile" />
+                    <img src="/images/profile.webp" className="w-13.75 object-cover" alt="profile" />
                 </div>
 
                 <div>

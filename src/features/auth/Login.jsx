@@ -80,7 +80,7 @@ const Login = () => {
 
             {/* Logo */}
             <div className='w-22.5 h-22.5 bg-primary/40 p-2.5 mb-10 rounded-3xl flex-center'>
-                <img src="/images/logo.png" alt="Logo" className="w-16 h-16 animate-fadeIn" />
+                <img src="/images/logo.webp" alt="Logo" className="w-16 h-16 animate-fadeIn" />
             </div>
 
             {/* Heading */}

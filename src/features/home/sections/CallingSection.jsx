@@ -62,7 +62,7 @@ const CallingSection = () => {
                     <div className="flex items-center gap-4">
 
                         <div className="w-14 h-14 rounded-full overflow-hidden bg-white flex items-center justify-center">
-                            <img src="/images/daddy.jpg" className='object-cover w-full h-full' alt="daddy" />
+                            <img src="/images/daddy.webp" className='object-cover w-full h-full' alt="daddy" />
                         </div>
 
                         <div className='flex flex-col flex-start'>
@@ -95,7 +95,7 @@ const CallingSection = () => {
                     <div className="flex items-center gap-4">
 
                         <div className="w-14 h-14 rounded-full overflow-hidden bg-white flex items-center justify-center">
-                            <img src="/images/mummy.jpg" className='object-cover w-full h-full' alt="mummy" />
+                            <img src="/images/mummy.webp" className='object-cover w-full h-full' alt="mummy" />
                         </div>
 
                         <div className='flex flex-col flex-start'>
@@ -128,7 +128,7 @@ const CallingSection = () => {
                     <div className="flex items-center gap-4">
 
                         <div className="w-14 h-14 rounded-full overflow-hidden bg-white flex items-center justify-center">
-                            <img src="/images/gaurdian.jpg" className='object-cover w-full h-full' alt="guardian" />
+                            <img src="/images/gaurdian.webp" className='object-cover w-full h-full' alt="guardian" />
                         </div>
 
                         <div className='flex flex-col flex-start'>
@@ -161,7 +161,7 @@ const CallingSection = () => {
                     <div className="flex items-center gap-4">
 
                         <div className="w-14 h-14 rounded-full overflow-hidden bg-white flex items-center justify-center">
-                            <img src="/images/mummy.jpg" className='object-cover w-full h-full' alt="mummy" />
+                            <img src="/images/mummy.webp" className='object-cover w-full h-full' alt="mummy" />
                         </div>
 
                         <div className='flex flex-col flex-start'>

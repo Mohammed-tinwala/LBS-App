@@ -17,7 +17,7 @@ export default function SplashScreen() {
 
             {/* Logo */}
             <img
-                src="/images/logo.png"
+                src="/images/logo.webp"
                 alt="LBS Logo"
                 className="w-24 h-24 animate-fadeIn"
             />

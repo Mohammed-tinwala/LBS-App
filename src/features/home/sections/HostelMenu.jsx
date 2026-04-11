@@ -95,11 +95,11 @@ const HostelMenu = () => {
 
                 {/* Breakfast */}
                 <div className="rounded-3xl p-5 text-black relative overflow-hidden 
-bg-[url('/images/breakfast-background.png')] bg-cover bg-center">
+bg-[url('/images/breakfast-background.webp')] bg-cover bg-center">
 
                     <div className="flex justify-between items-center mb-3">
                         <div className="flex flex-center items-center gap-1">
-                            <img src="/images/sunrise-svg.png" alt="sun" className="inline w-5 mr-1" />
+                            <img src="/images/sunrise-svg.webp" alt="sun" className="inline w-5 mr-1" />
                             <h3 className="font-semibold text-lg text-center mt-1">
                                 Breakfast
                             </h3>
@@ -118,18 +118,18 @@ bg-[url('/images/breakfast-background.png')] bg-cover bg-center">
                             <li>• Banana</li>
                         </ul>
 
-                        <img src="/images/breakfast.png" className="w-24 h-24 rounded-2xl object-contain" alt="breakfast" />
+                        <img src="/images/breakfast.webp" className="w-24 h-24 rounded-2xl object-contain" alt="breakfast" />
 
                     </div>
 
                 </div>
 
                 {/* Lunch */}
-                <div className="rounded-3xl p-5 text-black relative overflow-hidden bg-[url('/images/lunch-background.png')] bg-cover bg-center from-orange-100 to-orange-300">
+                <div className="rounded-3xl p-5 text-black relative overflow-hidden bg-[url('/images/lunch-background.webp')] bg-cover bg-center from-orange-100 to-orange-300">
 
                     <div className="flex justify-between items-center mb-3">
                         <div className="flex flex-center items-center gap-1">
-                            <img src="/images/afternoon-svg.png" alt="sun" className="inline w-5 mr-1" />
+                            <img src="/images/afternoon-svg.webp" alt="sun" className="inline w-5 mr-1" />
                             <h3 className="font-semibold text-lg text-center">
                                 Lunch
                             </h3>
@@ -152,18 +152,18 @@ bg-[url('/images/breakfast-background.png')] bg-cover bg-center">
                             <li>• Mix Veg & Salad</li>
                         </ul>
 
-                        <img src="/images/lunch-thali.png" className="w-24 h-24 rounded-2xl object-contain" alt="lunch" />
+                        <img src="/images/lunch-thali.webp" className="w-24 h-24 rounded-2xl object-contain" alt="lunch" />
 
                     </div>
 
                 </div>
 
                 {/* Dinner */}
-                <div className="rounded-3xl p-5 text-white relative overflow-hidden bg-[url('/images/dinner-background.png')] bg-cover bg-center from-blue-900 to-indigo-900">
+                <div className="rounded-3xl p-5 text-white relative overflow-hidden bg-[url('/images/dinner-background.webp')] bg-cover bg-center from-blue-900 to-indigo-900">
 
                     <div className="flex justify-between items-center mb-3">
                         <div className="flex flex-center items-center gap-1">
-                            <img src="/images/moon-svg.png" alt="sun" className="inline w-5 mr-1" />
+                            <img src="/images/moon-svg.webp" alt="sun" className="inline w-5 mr-1" />
                             <h3 className="font-semibold text-lg text-center mt-1">
                                 Dinner
                             </h3>
@@ -182,7 +182,7 @@ bg-[url('/images/breakfast-background.png')] bg-cover bg-center">
                         <li>• Gulab Jamun</li>
                     </ul>
 
-                    <img src="/images/dinner-thali.png" className="w-22 h-22 rounded-2xl object-contain" alt="dinner" />
+                    <img src="/images/dinner-thali.webp" className="w-22 h-22 rounded-2xl object-contain" alt="dinner" />
 
                     </div>
 

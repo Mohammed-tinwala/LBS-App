@@ -11,10 +11,10 @@ const MainLayout = () => {
         <Outlet />
       </div>
 
-      <div className="container-padding">
-        {/* Bottom Navbar (FIXED) */}
-        <BottomNavbar />
-      </div>
+
+      {/* Bottom Navbar (FIXED) */}
+      <BottomNavbar />
+
 
     </div>
   );

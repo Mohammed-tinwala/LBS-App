@@ -18,7 +18,7 @@ const QuickStats = () => {
                     {/* Avatar */}
                     <div className="w-30 h-30 sm:w-30 sm:h-30 rounded-3xl overflow-hidden bg-[radial-gradient(circle,#9768D9,#62399C)] shrink-0">
                         <img
-                            src="/images/profile.png"
+                            src="/images/profile.webp"
                             alt="student"
                             className="w-full h-full object-contain"
                         />
