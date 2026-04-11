@@ -2,7 +2,9 @@
     position: fixed;
     bottom: 0;
     left: 0;
+    right: 0;
     width: 100%;
+    margin: 0 auto;
     border-top-left-radius: 1.5rem;
     border-top-right-radius: 1.5rem;
     padding-bottom: 2rem;
@@ -21,7 +23,8 @@
     top: -59px;
     left: 0;
     width: 70px;
-    height: 70px;;
+    height: 70px;
+    ;
     border-radius: 50%;
     color: var(--text-color);
     display: flex;
@@ -52,4 +55,11 @@
     background: transparent;
     border-top-left-radius: 20px;
     box-shadow: 0 -10px 0 0 #ffffff;
+}
+
+@media (min-width: 1024px) {
+    .navigation {
+        width: 43.5%;
+        margin: 0 auto;
+    }
 }

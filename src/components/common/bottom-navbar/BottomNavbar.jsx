@@ -37,7 +37,7 @@ const BottomNav = () => {
 
     return (
         <div className="navigation bg-primary">
-            <div className="inner-navigation">
+            <div className="inner-navigation h-5 min-h-5 overflow-visible">
                 <motion.div
                     animate={{ left: positions[active] }}
                     transition={{ type: "spring", stiffness: 300, damping: 20 }}
@@ -67,6 +67,7 @@ const BottomNav = () => {
                                     scale: active === index ? 0.8 : 1
                                 }}
                                 transition={{ type: "spring", stiffness: 250, damping: 20 }}
+                                className="w-6 h-6 flex items-center justify-center"
                             >
                                 {(() => {
                                     const Icon = item.icon;
