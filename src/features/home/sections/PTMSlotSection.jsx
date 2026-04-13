@@ -16,7 +16,7 @@ const PTMSlotSection = () => {
 
 
     return (
-        <div>
+        <div className='container-padding'>
 
             {/* Sub heading */}
             <div className="flex items-center justify-between w-full mb-4">

@@ -10,7 +10,7 @@ const GatePassSection = () => {
     ];
 
     return (
-        <div>
+        <div className="container-padding">
 
             {/* Sub heading */}
             <div className="flex items-center justify-between w-full mb-4">
@@ -81,7 +81,7 @@ export default GatePassSection;
 
 const GatePassModal = ({ onClose }) => {
     return (
-        <div className="fixed inset-0 bg-black/40 flex items-end justify-center z-50">
+        <div className="fixed inset-0 bg-black/40 flex items-end justify-center z-9990">
 
             <div className="w-full max-w-md bg-white rounded-t-[28px] p-5">
 
@@ -102,11 +102,13 @@ const GatePassModal = ({ onClose }) => {
                     <input
                         type="date"
                         className='w-full h-14 bg-input-bg border border-primary rounded-[14px] px-4 pr-12 mt-1 mb-1 outline-none focus:ring-2 focus:ring-primary/40'
+                        placeholder="Select Date"
                     />
 
                     <input
                         type="time"
                         className='w-full h-14 bg-input-bg border border-primary rounded-[14px] px-4 pr-12 mt-1 mb-1 outline-none focus:ring-2 focus:ring-primary/40'
+                        placeholder="Select Time"
                     />
 
                     <button className="w-full mt-3 bg-primary text-white py-3 rounded-full">

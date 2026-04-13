@@ -16,9 +16,9 @@
   /* Spacing (8pt grid) */
   --space-xs: 12px;
   --space-sm: 16px;
-  --space-md: 24px;
-  --space-lg: 32px;
-  --space-xl: 40px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
   --space-2xl: 380px;
 
   /* Typography */
@@ -33,6 +33,10 @@
   --bp-md: 768px;
   --bp-lg: 1024px;
 }
+
+/* * {
+  outline: 1px solid red;
+} */
 
 /* 🧱 Base Styles */
 @layer base {
@@ -61,24 +65,24 @@
 
   /* 📦 Container Padding */
   .container-padding {
-    padding: var(--space-md);
+    padding: 0 var(--space-md);
   }
 
   @media(max-width: 380px) {
     .container-padding {
-      padding: var(--space-sm);
+      padding: 0 var(--space-sm);
     }
   }
 
   @media (min-width: 480px) {
     .container-padding {
-      padding: var(--space-lg);
+      padding: 0 var(--space-lg);
     }
   }
 
   @media (min-width: 768px) {
     .container-padding {
-      padding: var(--space-xl);
+      padding: 0 var(--space-xl);
     }
   }
 

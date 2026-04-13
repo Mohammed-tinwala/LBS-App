@@ -2,7 +2,7 @@ import { GraduationCap, BookOpen, Star } from "lucide-react";
 
 const QuickStats = () => {
     return (
-        <div className="w-full">
+        <div className="container-padding">
 
             {/* Top Section */}
             <div className="mb-6">

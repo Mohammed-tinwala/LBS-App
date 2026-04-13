@@ -13,7 +13,7 @@ import GatePassSection from './sections/GatePassSection';
 const Home = () => {
   return (
     <>
-      <div className='flex flex-col gap-6 pb-28'>
+      <div className='flex flex-col gap-6 pt-4 pb-28'>
         <HomeHeader name="Rohan Sharma" />
         <QuickStats />
         <HostelMenu />
