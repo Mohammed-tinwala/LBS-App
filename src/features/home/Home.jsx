@@ -9,6 +9,7 @@ import GallerySection from './sections/GallerySection';
 import PTMSlotSection from './sections/PTMSlotSection';
 import EVideosSection from './sections/EVideosSection';
 import GatePassSection from './sections/GatePassSection';
+import AcademicsSection from './sections/AcademicsSection';
 
 const Home = () => {
   return (
@@ -16,6 +17,7 @@ const Home = () => {
       <div className='flex flex-col gap-6 pt-4 pb-28'>
         <HomeHeader name="Rohan Sharma" />
         <QuickStats />
+        <AcademicsSection />
         <HostelMenu />
         <HealthSection score={83} height={123} blood="AB+" />
         <EVideosSection />

@@ -8,6 +8,12 @@ import Home from './features/home/Home'
 import ProfileScreen from './features/Profile/ProfileScreen';
 import NotificationScreen from './features/notification/NotificationScreen';
 import FeeDetailScreen from './features/fee/FeeDetailScreen';
+import EVideos from './features/e-videos/EVideos';
+
+// ✅ Import guards
+import AuthGuard from './guard/AuthGuard';
+import PublicRoute from './guard/PublicRoute';
+import SelectStudent from './features/auth/SelectStudent';
 
 function App() {
   return (
@@ -29,17 +35,35 @@ function App() {
           },
         }}
       />
-     
+
       <Routes>
-        
-        <Route path="/splash" element={<SplashScreen />} />
-        <Route path='/login' element={<Login />} />
-        
-        <Route element={<MainLayout />}>
-          <Route path="/" element={<Home />} />
+
+        {/* 🔓 Public Routes */}
+        <Route path="/" element={<SplashScreen />} />
+        <Route path="select-student" element={<SelectStudent />} />
+        <Route
+          path='/login'
+          element={
+            <PublicRoute>
+              <Login />
+            </PublicRoute>
+          }
+        />
+
+        {/* 🔐 Protected Routes */}
+        <Route
+          element={
+            <AuthGuard>
+              <MainLayout />
+            </AuthGuard>
+          }
+        >
+
+          <Route path="/home" element={<Home />} />
           <Route path="/profile" element={<ProfileScreen />} />
           <Route path="/notifications" element={<NotificationScreen />} />
           <Route path="/fee-detail" element={<FeeDetailScreen />} />
+          <Route path="/e-videos" element={<EVideos />} />
         </Route>
 
       </Routes>
@@ -47,4 +71,4 @@ function App() {
   )
 }
 
-export default App
+export default App;

@@ -1,8 +1,10 @@
 import { nav } from "framer-motion/client";
 import { Bell } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
 
-const HomeHeader = ({ name = "Rohan Sharma" }) => {
+const HomeHeader = () => {
+    const { student } = useAuth();
 
     const navigate = useNavigate();
 
@@ -12,7 +14,15 @@ const HomeHeader = ({ name = "Rohan Sharma" }) => {
         navigate('/notifications');
     }
 
+    const formatName = (name) => {
+        if (!name) return "";
 
+        return name
+            .toLowerCase()
+            .split(" ")
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(" ");
+    };
 
     return (
         <div className="flex-between container-padding">
@@ -25,7 +35,7 @@ const HomeHeader = ({ name = "Rohan Sharma" }) => {
 
                 <div>
                     <p className="text-[12px] text-label">Hello Welcome,</p>
-                    <h3 className="text-[18px] font-semibold">{name}</h3>
+                    <h3 className="text-[18px] leading-tight font-semibold">{formatName(student?.name) || "Student"}</h3>
                 </div>
             </Link>
 

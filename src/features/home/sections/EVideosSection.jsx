@@ -1,5 +1,5 @@
 import { ArrowUpRight, PlayCircle } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const EVideosSection = () => {
   const navigate = useNavigate();
@@ -23,9 +23,9 @@ const EVideosSection = () => {
         <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/20 rounded-full blur-3xl" />
 
         {/* Top Right Arrow */}
-        <div className="absolute top-4 right-4 w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+        <Link to='/e-videos' className="absolute top-4 right-4 w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
           <ArrowUpRight size={18} />
-        </div>
+        </Link>
 
         {/* Content */}
         <div className="relative z-10">

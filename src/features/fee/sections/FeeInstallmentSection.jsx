@@ -67,7 +67,7 @@ const FeeInstallmentsSection = () => {
 
             {/* Sub heading */}
             <div className="flex items-center justify-between w-full mb-4">
-                <h2 className="text-lg font-semibold">General Info</h2>
+                <h2 className="text-lg font-semibold">Installment Schedule</h2>
                 <p className="text-xs font-normal">See more</p>
             </div>
 

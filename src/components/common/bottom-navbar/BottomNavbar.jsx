@@ -36,7 +36,7 @@ const BottomNav = () => {
     }, [location.pathname]);
 
     return (
-        <div className="navigation bg-primary">
+        <div className="navigation bg-linear-to-t from-primary to-primary-dark">
             <div className="inner-navigation h-5 min-h-5 overflow-visible">
                 <motion.div
                     animate={{ left: positions[active] }}
