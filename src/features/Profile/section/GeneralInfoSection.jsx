@@ -1,4 +1,5 @@
 import { Bell, ChevronRight, Headphones, Shield } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import React from 'react'
 
 const GeneralInfoSection = () => {
@@ -11,27 +12,27 @@ const GeneralInfoSection = () => {
             </div>
 
             <div className='bg-primary/30 p-4 flex flex-col gap-3 rounded-2xl'>
-                <div className='w-full flex items-center justify-between'>
+                <Link to='/notifications' className='w-full flex items-center justify-between'>
                     <div className='flex items-start gap-2'>
                         <Bell size={24} className='text-black' />
                         <h3 className='text-[14px] font-semibold'>Notification</h3>
                     </div>
                     <ChevronRight size={24} className='text-black' />
-                </div>
-                <div className='w-full flex items-center justify-between'>
+                </Link>
+                <Link to='/security' className='w-full flex items-center justify-between'>
                     <div className='flex items-start gap-2'>
                         <Shield size={24} className='text-black' />
                         <h3 className='text-[14px] font-semibold'>Security</h3>
                     </div>
                     <ChevronRight size={24} className='text-black' />
-                </div>
-                <div className='w-full flex items-center justify-between'>
+                </Link>
+                <Link to='/help-center' className='w-full flex items-center justify-between'>
                     <div className='flex items-start gap-2'>
                         <Headphones size={24} className='text-black' />
                         <h3 className='text-[14px] font-semibold'>Help Center</h3>
                     </div>
                     <ChevronRight size={24} className='text-black' />
-                </div>
+                </Link>
             </div>
         </div>
     )

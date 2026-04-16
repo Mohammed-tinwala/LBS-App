@@ -1,43 +1,79 @@
-import { Activity, Ruler, Droplet, ArrowUpRight } from "lucide-react";
+import { Activity, Ruler, Droplet, ArrowUpRight, Weight, ActivityIcon } from "lucide-react";
 
-const HealthSection = () => {
-    const score = 83;
+const HealthSection = ({ height, weight, blood, diseases, medicines }) => {
+
+    // 🧮 Calculate BMI
+    const bmi = height && weight
+        ? (weight / ((height / 100) ** 2)).toFixed(1)
+        : null;
+
+    // 🎯 Health Logic
+    let score = 0;
+    let healthStatus = "No Data";
+    let bgGradient = "from-gray-200 to-gray-300"; // default
+
+    if (bmi) {
+        if (bmi < 18.5) {
+            score = 60;
+            healthStatus = "Underweight";
+            bgGradient = "from-yellow-200 to-yellow-300";
+        } else if (bmi >= 18.5 && bmi <= 24.9) {
+            score = 85;
+            healthStatus = "Good Health";
+            bgGradient = "from-green-200 to-green-300";
+        } else if (bmi >= 25 && bmi <= 29.9) {
+            score = 70;
+            healthStatus = "Overweight";
+            bgGradient = "from-orange-200 to-orange-300";
+        } else {
+            score = 50;
+            healthStatus = "Obese";
+            bgGradient = "from-red-200 to-red-300";
+        }
+    }
 
     return (
         <div className="container-padding">
 
-            {/* Sub heading */}
+            {/* Header */}
             <div className="flex items-center justify-between w-full mb-4">
                 <h2 className="text-lg font-semibold">Medical Data</h2>
                 <p className="text-xs font-normal">See more</p>
             </div>
 
-            {/* Top Health Card */}
-            <div className="rounded-[28px] p-4 bg-linear-to-r from-green-200 to-green-300 shadow-md flex flex-row sm:flex-row md:items-center md:justify-between gap-2">
+            {/* Top Card */}
+            <div className={`rounded-[28px] p-4 bg-linear-to-r ${bgGradient} shadow-md flex flex-row gap-2`}>
 
                 {/* Left Content */}
                 <div className="flex-1">
-                    <h2 className="text-xl md:text-4xl font-bold text-green-800 mb-3">
-                        Good Health
+                    <h2 className="text-xl md:text-4xl font-bold mb-3">
+                        {healthStatus}
                     </h2>
 
-                    <ul className="space-y-1 text-xs md:text-base mb-4">
-                        <li>• Vitals Stable</li>
-                        <li>• No Active Illness</li>
-                        <li>• Vaccination Pending</li>
-                    </ul>
+                    {/* Diseases */}
+                    {diseases && (
+                        <p className="text-xs mb-1">
+                            ⚠️ Diseases: {diseases}
+                        </p>
+                    )}
+
+                    {/* Medicines */}
+                    {medicines && (
+                        <p className="text-xs mb-3">
+                            💊 Medicines: {medicines}
+                        </p>
+                    )}
 
                     <button className="bg-black text-white px-5 py-2 rounded-full text-xs flex items-center gap-2 w-fit">
                         Learn more <ArrowUpRight size={16} />
                     </button>
                 </div>
 
-                {/* Right Circular Score */}
+                {/* Right Score */}
                 <div className="flex flex-col items-center justify-center">
-                    <p className="text-xs mb-1">Your Health Score</p>
+                    <p className="text-xs mb-1">Health Score</p>
 
                     <div className="relative w-28 h-28">
-
                         <svg className="w-full h-full -rotate-90">
                             <circle
                                 cx="56"
@@ -75,7 +111,7 @@ const HealthSection = () => {
                     </div>
 
                     <p className="text-[10px] text-gray-500 mt-1">
-                        *Calculated from test report
+                        *Based on BMI
                     </p>
                 </div>
             </div>
@@ -86,35 +122,57 @@ const HealthSection = () => {
                 {/* Height */}
                 <div className="rounded-3xl bg-[#CFC3E6] p-5 flex items-center justify-between shadow-sm">
                     <div className="flex items-center gap-4">
-
                         <div className="w-14 h-14 rounded-full bg-white flex items-center justify-center">
                             <Ruler size={24} />
                         </div>
-
-                        <div>
-                            <p className="text-sm text-black/70">Height</p>
-                        </div>
+                        <p className="text-sm text-black/70">Height</p>
                     </div>
 
                     <h2 className="text-3xl font-bold">
-                        123 <span className="text-lg font-medium">cm</span>
+                        {height || "--"} <span className="text-lg">CM</span>
                     </h2>
                 </div>
 
-                {/* Blood Group */}
+                {/* Weight */}
+                <div className="rounded-3xl bg-[#F8D5C1] p-5 flex items-center justify-between shadow-sm">
+                    <div className="flex items-center gap-4">
+                        <div className="w-14 h-14 rounded-full bg-white flex items-center justify-center">
+                            <Weight size={24} />
+                        </div>
+                        <p className="text-sm text-black/70">Weight</p>
+                    </div>
+
+                    <h2 className="text-3xl font-bold">
+                        {weight || "--"} <span className="text-lg">KG</span>
+                    </h2>
+                </div>
+
+                {/* BMI */}
+                <div className="rounded-3xl bg-[#F1EB86] p-5 flex items-center justify-between shadow-sm">
+                    <div className="flex items-center gap-4">
+                        <div className="w-14 h-14 rounded-full bg-white flex items-center justify-center">
+                            <ActivityIcon size={24} />
+                        </div>
+                        <p className="text-sm text-black/70">BMI</p>
+                    </div>
+
+                    <h2 className="text-3xl font-bold">
+                        {bmi || "--"}
+                    </h2>
+                </div>
+
+                {/* Blood */}
                 <div className="rounded-3xl bg-[#E6B6C1] p-5 flex items-center justify-between shadow-sm">
                     <div className="flex items-center gap-4">
-
                         <div className="w-14 h-14 rounded-full bg-white flex items-center justify-center">
                             <Droplet size={24} />
                         </div>
-
-                        <div>
-                            <p className="text-sm text-black/70">Blood Group</p>
-                        </div>
+                        <p className="text-sm text-black/70">Blood Group</p>
                     </div>
 
-                    <h2 className="text-3xl font-bold">AB+</h2>
+                    <h2 className="text-3xl font-bold">
+                        {blood || "--"}
+                    </h2>
                 </div>
 
             </div>

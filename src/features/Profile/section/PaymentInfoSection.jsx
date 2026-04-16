@@ -1,7 +1,17 @@
 import { ArrowUpRight, CreditCard, Phone } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import React from 'react'
 
 const PaymentInfoSection = () => {
+    const navigate = useNavigate();
+
+
+    const handleFeeClick = () => {
+        navigate('/fee-detail');
+    }
+
+
+
     return (
         <div className='container-padding'>
             {/* Sub heading */}
@@ -23,7 +33,7 @@ const PaymentInfoSection = () => {
                     </div>
 
                     <p className='text-black w-3/4 text-[12px] line-clamp-2 font-normal'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni nulla praesentium nesciunt!</p>
-                    <button className='text-[12px] flex items-center gap-1 text-black font-medium mt-4'>
+                    <button onClick={handleFeeClick} className='text-[12px] flex items-center gap-1 text-black font-medium mt-4'>
                         See More
                         <ArrowUpRight size={18} />
                     </button>

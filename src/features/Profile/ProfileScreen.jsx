@@ -9,12 +9,12 @@ import { useAuth } from '../../context/AuthContext';
 import { getStudentProfile } from '../../api/studentApi';
 import ProfileSkeleton from '../../components/loader/ProfileSkeleton';
 import { toast } from 'react-hot-toast';
+import LogoutSection from './section/LogoutSection';
 
 const ProfileScreen = () => {
 
-    const { student } = useAuth();
+    const { student, profile, setProfile } = useAuth(); // ✅ use global profile
 
-    const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -23,12 +23,12 @@ const ProfileScreen = () => {
                 setLoading(true);
 
                 const res = await getStudentProfile(
-                    student.id,
-                    student.school_id // ✅ dynamic
+                    student?.id,
+                    student?.school_id
                 );
 
                 if (res.status) {
-                    setProfile(res.data);
+                    setProfile(res.data); // ✅ store globally
                 } else {
                     toast.error("Failed to load profile");
                 }
@@ -44,9 +44,9 @@ const ProfileScreen = () => {
         if (student?.id) {
             fetchProfile();
         }
-    }, [student]);
+    }, [student, setProfile]);
 
-    // ✅ Proper Loading UI
+    // ✅ Loading UI
     if (loading) {
         return <ProfileSkeleton />;
     }
@@ -72,6 +72,7 @@ const ProfileScreen = () => {
                 <PaymentInfoSection profile={profile} />
                 <StudentDocumentsSection profile={profile} />
                 <GeneralInfoSection profile={profile} />
+                <LogoutSection />
 
             </div>
 

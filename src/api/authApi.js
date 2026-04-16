@@ -10,7 +10,7 @@ export const loginParent = async (mobile, password) => {
 
     const res = await axios.post(BASE_URL + "loginParent.php", params);
 
-    console.log("Login Response:", res.data);
+    // console.log("Login Response:", res.data);
 
     return res.data;
   } catch (error) {

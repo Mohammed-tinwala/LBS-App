@@ -19,7 +19,6 @@ const Login = () => {
     const [showPassword, setShowPassword] = useState(false)
     const [loading, setLoading] = useState(false)
 
-    // ✅ NEW STATES
     const [students, setStudents] = useState([])
     const [showModal, setShowModal] = useState(false)
 
@@ -111,16 +110,16 @@ const Login = () => {
         <div className='h-screen flex-center flex-col safe-area max-w-7xl mx-auto px-4'>
 
             {/* Logo */}
-            <div className='w-22.5 h-22.5 bg-primary/40 p-2.5 mb-10 rounded-3xl flex-center'>
-                <img src="/images/logo.webp" alt="Logo" className="w-16 h-16 animate-fadeIn" />
+            <div className='w-18 h-18 bg-primary/40 p-2.5 mb-4 rounded-2xl flex-center'>
+                <img src="/images/logo.webp" alt="Logo" className="w-14 h-14 animate-fadeIn" />
             </div>
 
             {/* Heading */}
             <div className='flex-center flex-col mb-10'>
-                <h1 className='text-[32px] text-primary-dark font-semibold'>
+                <h1 className='text-[24px] text-primary-dark font-semibold'>
                     Sign In
                 </h1>
-                <p className='text-sm text-label mt-1 mb-6'>
+                <p className='text-[12px] text-label mt-1'>
                     Please login to your account
                 </p>
             </div>
@@ -129,14 +128,14 @@ const Login = () => {
             <form onSubmit={handleSubmit}>
 
                 {/* Mobile */}
-                <label className='text-[14px]'>Mobile no.</label>
+                <label className='text-[12px]'>Mobile no.</label>
                 <input
                     type="tel"
                     name="mobile"
                     value={form.mobile}
                     onChange={handleChange}
                     placeholder='Enter your mobile no.'
-                    className='w-full h-15 bg-input-bg border border-primary rounded-[14px] px-4 mt-1 mb-2 outline-none focus:ring-2 focus:ring-primary/40'
+                    className='w-full h-14 bg-input-bg border border-primary rounded-[14px] px-4 mt-1 mb-2 outline-none focus:ring-2 focus:ring-primary/40 placeholder:text-[12px]'
                 />
                 {errors.mobile && (
                     <p className='text-red-500 text-xs mb-4'>{errors.mobile}</p>
@@ -144,7 +143,7 @@ const Login = () => {
 
                 {/* Password */}
                 <div>
-                    <label className='text-[14px]'>Password</label>
+                    <label className='text-[12px]'>Password</label>
 
                     <div className='relative'>
                         <input
@@ -153,7 +152,7 @@ const Login = () => {
                             value={form.password}
                             onChange={handleChange}
                             placeholder='Enter your password'
-                            className='w-full h-15 bg-input-bg border border-primary rounded-[14px] px-4 pr-12 mt-1 mb-1 outline-none focus:ring-2 focus:ring-primary/40'
+                            className='w-full h-14 bg-input-bg border border-primary rounded-[14px] px-4 pr-12 mt-1 mb-1 outline-none focus:ring-2 focus:ring-primary/40 placeholder:text-[12px]'
                         />
 
                         <button
