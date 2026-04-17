@@ -8,12 +8,12 @@ export const getMedicalData = async (student_id) => {
             params: { student_id }
         });
 
-        console.log(res.data);
+        // console.log(res.data);
 
         return res.data;
 
     } catch (error) {
-        console.error("Medical API Error:", error);
+        // console.error("Medical API Error:", error);
         return {
             status: false,
             medical: null

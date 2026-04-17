@@ -13,21 +13,34 @@ import AcademicsSection from './sections/AcademicsSection';
 
 import { useAuth } from '../../context/AuthContext'
 import { getMedicalData } from '../../api/medicalApi'
+import { fetchAdmitCard } from '../../api/admitCardApi';
+import { fetchGatePass } from '../../api/gatePassApi';   // ✅ NEW IMPORT
 import { toast } from 'react-hot-toast'
+import { all } from 'axios';
 
 const Home = () => {
 
   const [medical, setMedical] = useState(null);
-  const [loadingMedical, setLoadingMedical] = useState(true);
+  const [admitCard, setAdmitCard] = useState(null);
+
+  // ✅ Gate Pass states
+  const [gatePasses, setGatePasses] = useState({
+    pending: [],
+    approved: [],
+    rejected: [],
+    all: []
+  });
+
+  const [loading, setLoading] = useState(true);
 
   const { student } = useAuth();
-  console.log("Student Data in Home:", student.id); // Debugging line
 
+  // =========================
+  // Medical API
+  // =========================
   useEffect(() => {
     const fetchMedical = async () => {
       try {
-        setLoadingMedical(true);
-
         const res = await getMedicalData(student?.id);
 
         if (res.status) {
@@ -39,38 +52,100 @@ const Home = () => {
       } catch (err) {
         console.error(err);
         toast.error("Failed to load medical data");
-      } finally {
-        setLoadingMedical(false);
       }
     };
 
-    if (student?.id) {
-      fetchMedical();
-    }
+    if (student?.id) fetchMedical();
   }, [student]);
 
+  // =========================
+  // Admit Card API
+  // =========================
+  useEffect(() => {
+    const getAdmitCard = async () => {
+      try {
+        setLoading(true);
+        const res = await fetchAdmitCard(student.id);
+
+        if (res.status && res.admitcards.length > 0) {
+          setAdmitCard(res.admitcards[0]);
+        } else {
+          setAdmitCard(null);
+        }
+
+      } catch (err) {
+        console.error(err);
+        setAdmitCard(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (student?.id) getAdmitCard();
+  }, [student]);
+
+  // =========================
+  // 🚀 Gate Pass API (NEW)
+  // =========================
+  const loadGatePass = async () => {
+    try {
+      const res = await fetchGatePass(student.id, 2);
+
+      if (res.status) {
+        setGatePasses({
+          pending: res.pending || [],
+          approved: res.approved || [],
+          rejected: res.rejected || [],
+          all: res.all || []
+        });
+      }
+    } catch (err) {
+      toast.error("Failed to load gate pass data");
+    }
+  };
+
+  useEffect(() => {
+    if (student?.id) loadGatePass();
+  }, [student]);
 
   return (
     <>
       <div className='flex flex-col gap-6 pt-4 pb-28'>
+
         <HomeHeader name="Rohan Sharma" />
         <QuickStats />
-        <AcademicsSection />
+
+        <AcademicsSection
+          admitCard={admitCard}
+          loading={loading}
+        />
+
         <HostelMenu />
+
         <HealthSection
-          score={medical?.overall_health_score} // optional for now
+          score={medical?.overall_health_score}
           height={medical?.student_height}
           weight={medical?.student_weight}
           blood={medical?.student_bloodgroup}
           diseases={medical?.student_chronic_disease_info}
           medicines={medical?.student_medicine_intake_info}
         />
+
         <EVideosSection />
         <CallingSection />
         <AttendanceSection />
         <GallerySection />
         <PTMSlotSection />
-        <GatePassSection />
+
+        {/* ✅ PASS GATE PASS DATA */}
+        <GatePassSection
+          pending={gatePasses.pending}
+          approved={gatePasses.approved}
+          rejected={gatePasses.rejected}
+          all={gatePasses.all}
+          refreshGatePass={loadGatePass}
+        />
+
       </div>
     </>
   )
