@@ -186,7 +186,7 @@ const Home = () => {
 
       if (res.status) {
         const data = res.data || [];
-        console.log(data)
+        // console.log(data)
 
         // 🔥 sort by latest date + limit 6
         const latestSix = data
