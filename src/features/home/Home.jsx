@@ -10,11 +10,15 @@ import PTMSlotSection from './sections/PTMSlotSection';
 import EVideosSection from './sections/EVideosSection';
 import GatePassSection from './sections/GatePassSection';
 import AcademicsSection from './sections/AcademicsSection';
+import ENotesSummaryCard from './sections/ENotesSummaryCard';
+import DailyLearningSummaryCard from './sections/DailyLearningSummaryCard';
 
 import { useAuth } from '../../context/AuthContext'
 import { getMedicalData } from '../../api/medicalApi'
 import { fetchAdmitCard } from '../../api/admitCardApi';
 import { fetchGatePass } from '../../api/gatePassApi';   // ✅ NEW IMPORT
+import { fetchAllSubjects, fetchENotes } from '../../api/eNotesApi';
+import { fetchDailyLearning } from '../../api/dailyLearningApi';
 import { toast } from 'react-hot-toast'
 import { all } from 'axios';
 
@@ -22,6 +26,9 @@ const Home = () => {
 
   const [medical, setMedical] = useState(null);
   const [admitCard, setAdmitCard] = useState(null);
+  const [allSubjects, setAllSubjects] = useState([]); // ✅ Store all subjects for E-Notes filtering
+  const [eNotes, setENotes] = useState([]);
+  const [dailyLearning, setDailyLearning] = useState([]);
 
   // ✅ Gate Pass states
   const [gatePasses, setGatePasses] = useState({
@@ -50,7 +57,7 @@ const Home = () => {
         }
 
       } catch (err) {
-        console.error(err);
+        // console.error(err);
         toast.error("Failed to load medical data");
       }
     };
@@ -108,6 +115,100 @@ const Home = () => {
     if (student?.id) loadGatePass();
   }, [student]);
 
+  // =========================
+  // 🚀 All Subjects Api (NEW)
+  // =========================
+  const loadAllSubjects = async () => {
+    try {
+      setLoading(true);
+      const res = await fetchAllSubjects();
+      // console.log("All Subjects Response:", res);
+
+      if (res.status) {
+        setAllSubjects(res.subjects || []);
+      }
+    } catch (err) {
+      toast.error("Failed to load subjects");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  // =========================
+  // 🚀 ENotes Api (NEW)
+  // =========================
+  const loadENotes = async () => {
+    try {
+      setLoading(true);
+      const res = await fetchENotes({
+        class_id: student.class_id,
+        subject_id: null
+      });
+
+      // console.log("E-Notes Response:", res);
+
+      if (res.status) {
+        setENotes(res.enotes || []);
+      }
+    } catch (err) {
+      toast.error("Failed to load E-Notes");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (student?.class_id) {
+      loadAllSubjects();
+      loadENotes();
+    }
+  }, [student]);
+
+  // 📊 Summary Data
+  const totalNotes = eNotes.length;
+  const totalSubjects = allSubjects.length;
+
+  // 🕒 Get latest 5 notes
+  const recentNotes = eNotes.slice(0, 5);
+
+
+  // =========================
+  // 🚀 Daily learning Api (NEW)
+  // =========================
+
+  const loadDailyLearning = async () => {
+    try {
+      const res = await fetchDailyLearning(
+        student.school_id,
+        student.class_id
+      );
+
+      if (res.status) {
+        const data = res.data || [];
+        console.log(data)
+
+        // 🔥 sort by latest date + limit 6
+        const latestSix = data
+          .sort((a, b) => new Date(b.date) - new Date(a.date))
+          .slice(0, 6);
+
+        setDailyLearning(latestSix);
+      }
+    } catch (err) {
+      // console.log("Daily Learning Error:", err);
+      toast.error("Failed to load daily learning");
+    }
+  };
+
+  useEffect(() => {
+    if (student?.class_id && student?.school_id) {
+      loadAllSubjects();
+      loadENotes();
+      loadDailyLearning(); // ✅ ADD THIS
+    }
+  }, [student]);
+
   return (
     <>
       <div className='flex flex-col gap-6 pt-4 pb-28'>
@@ -144,6 +245,18 @@ const Home = () => {
           rejected={gatePasses.rejected}
           all={gatePasses.all}
           refreshGatePass={loadGatePass}
+        />
+
+        <ENotesSummaryCard
+          totalNotes={totalNotes}
+          subjects={totalSubjects}
+          recentNotes={recentNotes}
+          eNotes={eNotes}
+          allSubjects={allSubjects}
+        />
+
+        <DailyLearningSummaryCard
+          data={dailyLearning}
         />
 
       </div>

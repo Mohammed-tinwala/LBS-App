@@ -1,15 +1,48 @@
-const FeeSummary = () => {
-    const total = 45000;
-    const paid = 30000;
-    const due = total - paid;
+import React from "react";
 
-    const paidPercent = (paid / total) * 100;
+const FeeSummary = ({ feeDetails, loading }) => {
+    console.log("Rendering FeeSummary with details:", feeDetails, "Loading:", loading);
+    // ⏳ Loading State
+    if (loading) {
+        return (
+            <div className="container-padding">
+                <p className="text-sm text-gray-400">Loading fee details...</p>
+            </div>
+        );
+    }
+
+    // ⚠️ No Data State
+    if (!feeDetails) {
+        return (
+            <div className="container-padding">
+                <p className="text-sm text-gray-400">No fee data available</p>
+            </div>
+        );
+    }
+
+    // ✅ Extract Data
+    const total = feeDetails.netPayable || 0;
+    const paid = feeDetails.totalPaid || 0;
+    const due = feeDetails.remainingFee || 0;
+
+    // ✅ Safe Percent Calculation
+    const paidPercent = total > 0 ? (paid / total) * 100 : 0;
     const duePercent = 100 - paidPercent;
 
     return (
         <div className="container-padding">
 
-            {/* Top Stats */}
+            {/* 🏫 School Name */}
+            <div className="mb-4">
+                <h2 className="text-base font-semibold text-black">
+                    {feeDetails.school}
+                </h2>
+                <p className="text-xs text-gray-500">
+                    {feeDetails.merchantName ? `${feeDetails.merchantName}` : "No payment gateway info"}
+                </p>
+            </div>
+
+            {/* 💰 Top Stats */}
             <div className="grid grid-cols-3 gap-4 text-center sm:text-left">
 
                 <div className="flex flex-col items-start">
@@ -35,18 +68,20 @@ const FeeSummary = () => {
 
             </div>
 
-            {/* Progress Bar */}
+            {/* 📊 Progress Bar */}
             <div className="mt-4">
 
-                <div className="w-full h-2 bg-gray-700 rounded-full overflow-hidden flex">
+                <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden flex">
 
+                    {/* Paid */}
                     <div
-                        className="h-full bg-green-500"
+                        className="h-full bg-green-500 transition-all duration-500"
                         style={{ width: `${paidPercent}%` }}
                     />
 
+                    {/* Due */}
                     <div
-                        className="h-full bg-red-500"
+                        className="h-full bg-red-500 transition-all duration-500"
                         style={{ width: `${duePercent}%` }}
                     />
 

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { ArrowUpRight, Plus, Clock, CheckCircle2, XCircle } from "lucide-react";
+import { Link } from "react-router-dom";
 import { createGatePass, fetchGatePass } from "../../../api/gatePassApi";
 import Loader from "../../../components/loader/Loader";
 import { useAuth } from "../../../context/AuthContext";
@@ -32,9 +33,9 @@ const GatePassSection = ({ pending = [], approved = [], rejected = [], all = [],
 
                 <div className="flex justify-between mb-4">
                     <h2 className="text-xl font-semibold">Requests</h2>
-                    <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                    <Link to="/gate-pass-history" className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
                         <ArrowUpRight />
-                    </div>
+                    </Link>
                 </div>
 
                 {/* Requests */}
@@ -102,7 +103,7 @@ export default GatePassSection;
 
 /* ================= MODAL ================= */
 
-const GatePassModal = ({ onClose, student, refreshGatePass  }) => {
+const GatePassModal = ({ onClose, student, refreshGatePass }) => {
 
     const [loading, setLoading] = useState(false);
 
@@ -133,7 +134,7 @@ const GatePassModal = ({ onClose, student, refreshGatePass  }) => {
                 toast.success(res.message);
 
                 await refreshGatePass();
-                
+
                 onClose();
 
                 // optional: refresh page or trigger parent refresh later

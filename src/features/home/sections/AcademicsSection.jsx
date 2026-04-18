@@ -132,7 +132,7 @@ const AcademicsSection = ({ admitCard, loading }) => {
                         {/* Optional Fee Progress */}
                         {admitCard && !admitCardAvailable && (
                             <p className="text-[11px] text-red-500 mt-1">
-                                {admitCard.fee_required}% fee pending
+                                Mandatory fee: {admitCard.fee_required}%
                             </p>
                         )}
 

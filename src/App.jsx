@@ -13,6 +13,9 @@ import EVideos from './features/e-videos/EVideos';
 import SelectStudent from './features/auth/SelectStudent';
 import SecurityScreen from './features/SecurityScreen';
 import HelpCenter from './features/HelpCenter';
+import GatePassHistoryDetail from './features/GatePassHistoryDetail';
+import ENotesDetailPage from './features/ENotesDetailPage';
+import DailyLearningDetail from './features/DailyLearningDetail';
 
 import AuthGuard from './guard/AuthGuard';
 import PublicRoute from './guard/PublicRoute';
@@ -75,6 +78,9 @@ function App() {
           <Route path="/e-videos" element={<EVideos />} />
           <Route path="/security" element={<SecurityScreen />} />
           <Route path="/help-center" element={<HelpCenter />} /> {/* ✅ Help Center Route */}
+          <Route path="/gate-pass-history" element={<GatePassHistoryDetail />} /> {/* ✅ Gate Pass History Route */}  
+          <Route path="/enotes" element={<ENotesDetailPage />} /> {/* ✅ E-Notes Route */}
+          <Route path="/daily-learning" element={<DailyLearningDetail />} /> {/* ✅ Daily Learning Route */}
         </Route>
 
       </Routes>
