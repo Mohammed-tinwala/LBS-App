@@ -1,5 +1,6 @@
 import React from "react";
 import { BookOpen, CalendarDays, FileText, ArrowUpRight, Zap } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const DailyLearningSummaryCard = ({ data = [] }) => {
 
@@ -45,9 +46,9 @@ const DailyLearningSummaryCard = ({ data = [] }) => {
             <div className="flex items-center justify-between w-full mb-4">
                 <h2 className="text-lg font-semibold">Daily Learning</h2>
 
-                <p className="text-xs font-normal text-gray-500 hover:text-gray-800 cursor-pointer transition">
+                <Link to="/daily-learning" className="text-xs font-normal text-gray-500 hover:text-gray-800 cursor-pointer transition">
                     See more
-                </p>
+                </Link>
             </div>
 
             {/* Cards */}
@@ -88,7 +89,7 @@ const DailyLearningSummaryCard = ({ data = [] }) => {
                                 {/* Attachment */}
                                 {item.attachment && (
                                     <a
-                                        href={`https://lbsschool.in/old/lms/student/img/${item.attachment}`}
+                                        href={`https://lbsschool.in/old/lms/dailyupdates/${item.attachment}`}
                                         target="_blank"
                                         rel="noreferrer"
                                         className="absolute -right-1 -bottom-1 bg-white/20 hover:bg-white/40 backdrop-blur-md p-1.5 rounded-full text-white transition-all shadow-sm flex items-center justify-center border border-white/10"
