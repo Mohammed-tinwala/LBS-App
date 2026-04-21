@@ -9,8 +9,8 @@ const EVideosSection = () => {
 
       {/* Sub heading */}
       <div className="flex items-center justify-between w-full mb-4">
-        <h2 className="text-lg font-semibold">E Videos</h2>
-        <p className="text-xs font-normal">See more</p>
+        <h2 className="text-lg font-semibold">All Videos</h2>
+        <Link to='/e-videos' className="text-xs font-normal">See more</Link>
       </div>
 
       <div
@@ -34,7 +34,7 @@ const EVideosSection = () => {
           <div className="flex items-center gap-3 mb-3">
             <PlayCircle size={28} />
             <h2 className="text-xl font-semibold">
-              E-Videos Learning
+              School Videos
             </h2>
           </div>
 

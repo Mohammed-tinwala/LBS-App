@@ -1,42 +1,21 @@
 import React from "react";
-import { BookOpen, CalendarDays, FileText, ArrowUpRight, Zap } from "lucide-react";
+import { CalendarDays, ArrowUpRight, User } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const DailyLearningSummaryCard = ({ data = [] }) => {
 
-    // Helper to format date
-    const formatDate = (dateString) => {
-        const date = new Date(dateString);
-        return date.toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-        });
-    };
+    // 🧠 Get latest 6 items
+    const latestData = [...data]
+        .sort((a, b) => new Date(b.date) - new Date(a.date))
+        .slice(0, 6);
 
-    // Card styles based on text
-    const getCardStyles = (text) => {
-        const lowerText = text.toLowerCase();
-
-        if (lowerText.includes("schedule")) {
-            return "bg-gradient-to-br from-indigo-600 to-blue-700";
-        }
-        if (lowerText.includes("homework")) {
-            return "bg-gradient-to-br from-pink-400 to-pink-500";
-        }
-        return "bg-gradient-to-br from-yellow-400 to-amber-500";
-    };
-
-    // Icon logic
-    const getIcon = (text) => {
-        const lowerText = text.toLowerCase();
-
-        if (lowerText.includes("schedule")) {
-            return <CalendarDays size={20} className="text-white" />;
-        }
-        if (lowerText.includes("homework")) {
-            return <BookOpen size={20} className="text-white" />;
-        }
-        return <FileText size={20} className="text-white" />;
+    // 🎨 Theme (same as detail page)
+    const getTheme = (text = "") => {
+        const t = text.toLowerCase();
+        if (t.includes("schedule")) return "bg-[#CFC3E6]";
+        if (t.includes("math")) return "bg-[#E6B6C1]";
+        if (t.includes("science")) return "bg-[#abdfb4]";
+        return "bg-primary/20";
     };
 
     return (
@@ -46,68 +25,77 @@ const DailyLearningSummaryCard = ({ data = [] }) => {
             <div className="flex items-center justify-between w-full mb-4">
                 <h2 className="text-lg font-semibold">Daily Learning</h2>
 
-                <Link to="/daily-learning" className="text-xs font-normal text-gray-500 hover:text-gray-800 cursor-pointer transition">
+                <Link
+                    to="/daily-learning"
+                    className="text-xs text-gray-500 hover:text-gray-800"
+                >
                     See more
                 </Link>
             </div>
 
-            {/* Cards */}
-            <div className="flex overflow-x-auto gap-3 pb-4 snap-x snap-mandatory scroll-smooth [&::-webkit-scrollbar]:hidden">
+            {/* Timeline */}
+            {latestData.length === 0 ? (
+                <p className="text-sm text-gray-400">
+                    No daily learning available
+                </p>
+            ) : (
+                <div className="relative pl-6 border-l border-primary/40 flex flex-col gap-4">
 
-                {data.length > 0 ? (
-                    data.map((item) => (
-                        <div
-                            key={item.id}
-                            className={`relative min-w-40 w-40 h-52.5 sm:min-w-45 sm:w-45 sm:h-57.5 rounded-4xl p-5 flex flex-col justify-between shrink-0 snap-center shadow-lg transition-transform hover:scale-[1.03] cursor-pointer bg-linear-to-br from-primary to-primary-dark `}
-                        >
+                    {latestData.map((item) => {
+                        const d = new Date(item.date);
 
-                            {/* Top */}
-                            <div className="flex justify-between items-start">
+                        return (
+                            <div
+                                key={item.id}
+                                className={`relative p-4 rounded-2xl shadow-sm flex flex-col gap-2 ${getTheme(item.text)}`}
+                            >
 
-                                <div className="bg-white/20 p-2 rounded-2xl backdrop-blur-sm shadow-inner">
-                                    {getIcon(item.text)}
+                                {/* 🔵 Timeline Dot */}
+                                <span className="absolute -left-[18px] top-5 w-4 h-4 rounded-full bg-primary border-2 border-white shadow"></span>
+
+                                <div className="flex items-center justify-between mb-2 text-xs text-gray-500">
+                                    {/* 🧾 Title */}
+                                    <h3 className="text-sm font-semibold text-gray-800">
+                                        {item.text}
+                                    </h3>
+                                    <div className="flex items-center gap-1">
+                                        <CalendarDays size={14} />
+                                        {d.toLocaleDateString("en-US", {
+                                            month: "short",
+                                            day: "numeric",
+                                        })}
+                                    </div>
+
                                 </div>
 
-                                {/* <div className="bg-p text-white text-xs font-bold px-2.5 py-1.5 rounded-full flex items-center gap-1 shadow-sm">
-                                    <Zap size={12} fill="currentColor" strokeWidth={0} />
-                                    {item.class_id}
-                                </div> */}
+                                {/* 📅 Meta */}
+                                <div className="flex flex-col items-start text-xs text-gray-500">
 
-                            </div>
+                                    <div className="flex items-center gap-1">
+                                        <User size={14} />
+                                        {item.teacher || "Teacher"}
+                                    </div>
 
-                            {/* Bottom */}
-                            <div className="relative mt-auto flex flex-col gap-1.5">
+                                </div>
 
-                                <span className="w-fit bg-white/20 text-white/90 text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full backdrop-blur-md shadow-sm border border-white/10">
-                                    {formatDate(item.date)}
-                                </span>
-
-                                <h3 className="text-white font-semibold text-sm leading-snug pr-6">
-                                    {item.text}
-                                </h3>
-
-                                {/* Attachment */}
+                                {/* 📎 Attachment */}
                                 {item.attachment && (
                                     <a
                                         href={`https://lbsschool.in/old/lms/dailyupdates/${item.attachment}`}
                                         target="_blank"
                                         rel="noreferrer"
-                                        className="absolute -right-1 -bottom-1 bg-white/20 hover:bg-white/40 backdrop-blur-md p-1.5 rounded-full text-white transition-all shadow-sm flex items-center justify-center border border-white/10"
-                                        title={`Open ${item.attachment}`}
+                                        className="absolute right-3 bottom-3 bg-white/60 hover:bg-white p-1.5 rounded-full text-gray-700 shadow-sm transition"
                                     >
-                                        <ArrowUpRight size={18} strokeWidth={2.5} />
+                                        <ArrowUpRight size={16} />
                                     </a>
                                 )}
 
                             </div>
+                        );
+                    })}
 
-                        </div>
-                    ))
-                ) : (
-                    <p className="text-sm text-gray-400">No daily learning available</p>
-                )}
-
-            </div>
+                </div>
+            )}
         </div>
     );
 };

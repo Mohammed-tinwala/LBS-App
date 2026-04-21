@@ -16,12 +16,14 @@ import HelpCenter from './features/HelpCenter';
 import GatePassHistoryDetail from './features/GatePassHistoryDetail';
 import ENotesDetailPage from './features/ENotesDetailPage';
 import DailyLearningDetail from './features/DailyLearningDetail';
+import GrievancePage from './features/GrievanceSection';
 
 import AuthGuard from './guard/AuthGuard';
 import PublicRoute from './guard/PublicRoute';
 
 // ✅ NEW IMPORT
 import ScrollToTop from './components/common/ScrollToTop';
+import DoubtPage from './features/doubt/DoubtPage';
 
 function App() {
   return (
@@ -81,6 +83,9 @@ function App() {
           <Route path="/gate-pass-history" element={<GatePassHistoryDetail />} /> {/* ✅ Gate Pass History Route */}  
           <Route path="/enotes" element={<ENotesDetailPage />} /> {/* ✅ E-Notes Route */}
           <Route path="/daily-learning" element={<DailyLearningDetail />} /> {/* ✅ Daily Learning Route */}
+          <Route path="/grievance" element={<GrievancePage />} /> {/* ✅ Grievance Route */}
+          <Route path="*" element={<div className="container-padding"><h2 className="text-xl font-semibold">404 - Page Not Found</h2></div>} /> {/* Catch-all route for 404 */}
+          <Route path='/doubt' element={<DoubtPage />} /> {/* ✅ Doubt Page Route */}
         </Route>
 
       </Routes>

@@ -1,7 +1,7 @@
 import React from "react";
 
 const FeeSummary = ({ feeDetails, loading }) => {
-    console.log("Rendering FeeSummary with details:", feeDetails, "Loading:", loading);
+
     // ⏳ Loading State
     if (loading) {
         return (

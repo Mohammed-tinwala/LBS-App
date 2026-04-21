@@ -19,8 +19,6 @@ const EVideos = () => {
 
                 const res = await getEVideos(student?.class_id);
 
-                // console.log("API Response:", res);
-
                 if (res.status) {
                     setVideos(res.data);
                 } else {

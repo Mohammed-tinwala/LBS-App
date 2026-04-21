@@ -19,8 +19,10 @@ import { fetchAdmitCard } from '../../api/admitCardApi';
 import { fetchGatePass } from '../../api/gatePassApi';   // ✅ NEW IMPORT
 import { fetchAllSubjects, fetchENotes } from '../../api/eNotesApi';
 import { fetchDailyLearning } from '../../api/dailyLearningApi';
+import { fetchHostelMenu } from '../../api/hostelMenuApi';
 import { toast } from 'react-hot-toast'
 import { all } from 'axios';
+import HostelMenuu from './sections/HostelMenuu';
 
 const Home = () => {
 
@@ -29,6 +31,7 @@ const Home = () => {
   const [allSubjects, setAllSubjects] = useState([]); // ✅ Store all subjects for E-Notes filtering
   const [eNotes, setENotes] = useState([]);
   const [dailyLearning, setDailyLearning] = useState([]);
+  const [hostelMenu, setHostelMenu] = useState([]);
 
   // ✅ Gate Pass states
   const [gatePasses, setGatePasses] = useState({
@@ -122,7 +125,6 @@ const Home = () => {
     try {
       setLoading(true);
       const res = await fetchAllSubjects();
-      // console.log("All Subjects Response:", res);
 
       if (res.status) {
         setAllSubjects(res.subjects || []);
@@ -145,8 +147,6 @@ const Home = () => {
         class_id: student.class_id,
         subject_id: null
       });
-
-      // console.log("E-Notes Response:", res);
 
       if (res.status) {
         setENotes(res.enotes || []);
@@ -201,6 +201,10 @@ const Home = () => {
     }
   };
 
+  // =========================
+  // 🚀 Hostel Menu Api (NEW)
+  // =========================
+
   useEffect(() => {
     if (student?.class_id && student?.school_id) {
       loadAllSubjects();
@@ -209,11 +213,36 @@ const Home = () => {
     }
   }, [student]);
 
+  const loadHostelMenu = async () => {
+    try {
+      const res = await fetchHostelMenu({
+        school_id: student?.school_id
+      });
+
+      if (res.status) {
+        setHostelMenu(res.data || []);
+      } else {
+        toast.error(res.message || "No hostel menu found");
+      }
+
+    } catch (err) {
+      console.error("Hostel Menu Error:", err);
+      toast.error("Failed to load hostel menu");
+    }
+  };
+
+  useEffect(() => {
+    if (student?.school_id) {
+      loadHostelMenu();
+    }
+  }, [student]);
+
   return (
     <>
       <div className='flex flex-col gap-6 pt-4 pb-28'>
 
         <HomeHeader name="Rohan Sharma" />
+        <HostelMenuu data={hostelMenu} />
         <QuickStats />
 
         <AcademicsSection
@@ -221,7 +250,19 @@ const Home = () => {
           loading={loading}
         />
 
-        <HostelMenu />
+        <DailyLearningSummaryCard
+          data={dailyLearning}
+        />
+
+        <ENotesSummaryCard
+          totalNotes={totalNotes}
+          subjects={totalSubjects}
+          recentNotes={recentNotes}
+          eNotes={eNotes}
+          allSubjects={allSubjects}
+        />
+
+        {/* <HostelMenu /> */}
 
         <HealthSection
           score={medical?.overall_health_score}
@@ -246,19 +287,6 @@ const Home = () => {
           all={gatePasses.all}
           refreshGatePass={loadGatePass}
         />
-
-        <ENotesSummaryCard
-          totalNotes={totalNotes}
-          subjects={totalSubjects}
-          recentNotes={recentNotes}
-          eNotes={eNotes}
-          allSubjects={allSubjects}
-        />
-
-        <DailyLearningSummaryCard
-          data={dailyLearning}
-        />
-
       </div>
     </>
   )

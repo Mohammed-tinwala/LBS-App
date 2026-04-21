@@ -16,7 +16,7 @@ const BottomNav = () => {
     const items = [
         { icon: Home, path: "/" },
         { icon: CreditCard, path: "/fee-detail" },
-        { icon: MessageSquareText, path: "/products" },
+        { icon: MessageSquareText, path: "/doubt" },
         { icon: User, path: "/profile" }
     ];
 

@@ -66,7 +66,7 @@ const CallingSection = () => {
                         </div>
 
                         <div className='flex flex-col flex-start'>
-                            <p className="text-lg font-semibold">Daddy</p>
+                            <p className="text-lg font-semibold">Security Gaurd</p>
                             <div className='flex items-center text-xs gap-4'>
                                 <div className='flex items-center gap-2'>
 
@@ -99,7 +99,7 @@ const CallingSection = () => {
                         </div>
 
                         <div className='flex flex-col flex-start'>
-                            <p className="text-lg font-semibold">Mummy</p>
+                            <p className="text-lg font-semibold">Admin</p>
                             <div className='flex items-center text-xs gap-4'>
                                 <div className='flex items-center gap-2'>
 
@@ -165,7 +165,7 @@ const CallingSection = () => {
                         </div>
 
                         <div className='flex flex-col flex-start'>
-                            <p className="text-lg font-semibold">Mummy</p>
+                            <p className="text-lg font-semibold">Teacher</p>
                             <div className='flex items-center text-xs gap-4'>
                                 <div className='flex items-center gap-2'>
 

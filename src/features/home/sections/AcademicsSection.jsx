@@ -6,15 +6,12 @@ const AcademicsSection = ({ admitCard, loading }) => {
     const navigate = useNavigate();
     const [showFeePopup, setShowFeePopup] = useState(false);
 
-    // console.log("Admit Card Data in AcademicsSection:", admitCard.exam_name); // Debugging line
-
     const nextExam = {
         subject: "Mathematics",
         date: "12 April",
         time: "10:00 AM",
     };
-
-    // ✅ Admit card availability logic
+    
     const admitCardAvailable =
         admitCard && admitCard.fee_required <= 0;
 

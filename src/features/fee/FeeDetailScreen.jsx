@@ -14,12 +14,10 @@ import ProfilePageSkeleton from '../../components/loader/ProfileSkeleton';
 
 const FeeDetailScreen = () => {
 
-    const { profile, student } = useAuth(); // ✅ FIX: get profile from context
+    const { profile, student } = useAuth(); 
 
     const [feeDetails, setFeeDetails] = useState(null);
     const [feeLoading, setFeeLoading] = useState(false);
-
-    // console.log("Profile in FeeDetailScreen:", profile); // ✅ Debug log
 
     const loadFeeDetails = async () => {
         try {
@@ -30,12 +28,9 @@ const FeeDetailScreen = () => {
                 school: student?.school_id
             });
 
-            console.log("Fee API Response:", res);
-
             if (res.status) {
                 const data = res.data;
 
-                // ✅ Normalize values (VERY IMPORTANT)
                 setFeeDetails({
                     school: data.school,
                     netPayable: Number(data.net_payable) || 0,

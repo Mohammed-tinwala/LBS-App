@@ -1,67 +1,78 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import PageHeader from '../../components/common/headers/PageHeader'
-import { Bell, CalendarDays, BarChart3, PhoneMissed } from "lucide-react";
+import { Bell } from "lucide-react"
+import { fetchNotifications } from '../../api/notificationApi'
+import { useAuth } from '../../context/AuthContext'
 
 const NotificationScreen = () => {
 
-  const notifications = [
-    {
-      section: "Today",
-      items: [
-        {
-          title: "Calling Minutes are Low ⚠️",
-          desc: "You’re running low on your monthly minutes. Recharge now to avoid call interruptions.",
-          time: "9 min ago",
-          count: 2,
-          color: "bg-green-100 text-green-600",
-          icon: Bell,
-        },
-        {
-          title: "New Feature Available 🎉",
-          desc: "Learn more about managing account info and activity.",
-          time: "14 min ago",
-          color: "bg-yellow-100 text-yellow-600",
-          icon: Bell,
-        },
-        {
-          title: "Plan Successfully Renewed ✅",
-          desc: "Your calling plan has been renewed.",
-          time: "9 min ago",
-          count: 2,
-          color: "bg-red-100 text-red-500",
-          icon: Bell,
-        },
-      ],
-    },
-    {
-      section: "Yesterday",
-      items: [
-        {
-          title: "Reminder for your PTM 📅",
-          desc: "Your Parent-Teacher Meeting is scheduled for tomorrow.",
-          time: "9 min ago",
-          count: 2,
-          color: "bg-teal-100 text-teal-600",
-          icon: CalendarDays,
-        },
-        {
-          title: "Weekly Usage Summary 📊",
-          desc: "You’ve used 120 minutes this week. Keep track to manage your monthly limit better.",
-          time: "14 min ago",
-          color: "bg-amber-100 text-amber-600",
-          icon: BarChart3,
-        },
-        {
-          title: "Missed Call Alert 📞",
-          desc: "You missed a call from your parent. Tap here to call them back instantly.",
-          time: "9 min ago",
-          count: 2,
-          color: "bg-pink-100 text-pink-600",
-          icon: PhoneMissed,
-        },
-      ],
-    },
-  ];
+  const { student } = useAuth()
+
+  const [notifications, setNotifications] = useState([])
+  const [loading, setLoading] = useState(false)
+
+  // 📌 Fetch notifications
+  const loadNotifications = async () => {
+    setLoading(true)
+    try {
+      const res = await fetchNotifications({
+        school_id: student?.school_id,
+        class_id: student?.class_id,
+      })
+
+      if (res?.status) {
+        setNotifications(groupByDate(res.data || []))
+      } else {
+        setNotifications([])
+      }
+
+    } catch (err) {
+      console.error("Notification Error:", err)
+      setNotifications([])
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    if (student?.school_id) {
+      loadNotifications()
+    }
+  }, [student])
+
+
+  // 📌 Grouping logic (Today / Yesterday / Older)
+  const groupByDate = (data) => {
+    const today = new Date().toDateString()
+    const yesterday = new Date(Date.now() - 86400000).toDateString()
+
+    const groups = {}
+
+    data.forEach(item => {
+      const itemDate = new Date(item.date).toDateString()
+
+      let key = "Older"
+      if (itemDate === today) key = "Today"
+      else if (itemDate === yesterday) key = "Yesterday"
+
+      if (!groups[key]) groups[key] = []
+      groups[key].push({
+        title: item.title,
+        desc: item.title,
+        time: new Date(item.date).toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit'
+        }),
+        icon: Bell,
+        color: "bg-primary/10 text-primary"
+      })
+    })
+
+    return Object.keys(groups).map(section => ({
+      section,
+      items: groups[section]
+    }))
+  }
 
 
   return (
@@ -70,69 +81,64 @@ const NotificationScreen = () => {
 
       <div className="mt-2 space-y-6 container-padding">
 
-        {notifications.map((group, index) => (
-          <div key={index}>
+        {loading ? (
+          <p className="text-center text-label text-sm">Loading notifications...</p>
+        ) : notifications.length === 0 ? (
+          <p className="text-center text-label text-sm">No notifications found</p>
+        ) : (
 
-            {/* Section Title */}
-            <div className="flex items-center gap-3 mb-4">
-              <h2 className="text-[14px] font-semibold text-label">
-                {group.section}
-              </h2>
-              <div className="flex-1 h-px bg-gray-200" />
-            </div>
+          notifications.map((group, index) => (
+            <div key={index}>
 
-            {/* Items */}
-            <div className="space-y-6">
-              {group.items.map((item, i) => {
-                const Icon = item.icon;
+              {/* Section Title */}
+              <div className="flex items-center gap-3 mb-4">
+                <h2 className="text-[14px] font-semibold text-label">
+                  {group.section}
+                </h2>
+                <div className="flex-1 h-px bg-gray-200" />
+              </div>
 
-                return (
-                  <div key={i} className="flex gap-4 items-start">
+              {/* Items */}
+              <div className="space-y-6">
+                {group.items.map((item, i) => {
+                  const Icon = item.icon
 
-                    {/* Icon */}
-                    <div
-                      className={`w-12 h-12 rounded-full flex items-center justify-center ${item.color}`}
-                    >
-                      <Icon size={20} />
-                    </div>
+                  return (
+                    <div key={i} className="flex gap-4 items-start">
 
-                    {/* Content */}
-                    <div className="flex-1">
+                      {/* Icon */}
+                      {/* <div className={`w-12 h-12 rounded-full flex items-center justify-center ${item.color}`}>
+                        <Icon size={20} />
+                      </div> */}
 
-                      {/* Title + Time */}
-                      <div className="flex justify-between items-start">
-                        <h3 className="text-[14px] font-semibold">
-                          {item.title}
-                        </h3>
-                        <span className="text-[12px] text-label whitespace-nowrap">
-                          {item.time}
-                        </span>
-                      </div>
+                      {/* Content */}
+                      <div className="flex-1">
 
-                      <div className='flex items-center justify-between'>
-                        {/* Description */}
-                        <p className="text-[12px] text-label line-clamp-2 mt-1 max-w-[80%] leading-relaxed">
+                        <div className="flex justify-between items-start">
+                          <h3 className="text-[14px] font-semibold">
+                            {item.title}
+                          </h3>
+
+                          <span className="text-[12px] text-label whitespace-nowrap">
+                            {item.time}
+                          </span>
+                        </div>
+
+                        {/* <p className="text-[12px] text-label line-clamp-2 mt-1 leading-relaxed">
                           {item.desc}
-                        </p>
-
-
-                        {/* Count Badge */}
-                        {item.count && (
-                          <div className="w-6 h-6 bg-teal-600 text-white text-[10px] rounded-full flex items-center justify-center">
-                            {item.count}
-                          </div>
-                        )}
+                        </p> */}
 
                       </div>
 
                     </div>
-                  </div>
-                );
-              })}
-            </div>
+                  )
+                })}
+              </div>
 
-          </div>
-        ))}
+            </div>
+          ))
+
+        )}
 
       </div>
     </div>
