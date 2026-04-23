@@ -83,7 +83,7 @@ const MentorMentee = ({ data = [], loading }) => {
             </div>
 
             {/* 🔷 GRID */}
-            <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 gap-5">
 
                 {data.map((item) => {
                     const status = getStatus(item.status);
