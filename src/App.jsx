@@ -17,6 +17,7 @@ import GatePassHistoryDetail from './features/GatePassHistoryDetail';
 import ENotesDetailPage from './features/ENotesDetailPage';
 import DailyLearningDetail from './features/DailyLearningDetail';
 import GrievancePage from './features/GrievanceSection';
+import HostelRoom from './features/HostelRoom';
 
 import AuthGuard from './guard/AuthGuard';
 import PublicRoute from './guard/PublicRoute';
@@ -86,6 +87,7 @@ function App() {
           <Route path="/grievance" element={<GrievancePage />} /> {/* ✅ Grievance Route */}
           <Route path="*" element={<div className="container-padding"><h2 className="text-xl font-semibold">404 - Page Not Found</h2></div>} /> {/* Catch-all route for 404 */}
           <Route path='/doubt' element={<DoubtPage />} /> {/* ✅ Doubt Page Route */}
+          <Route path='/hostel-room' element={<HostelRoom />} /> {/* ✅ Hostel Room Route */}
         </Route>
 
       </Routes>

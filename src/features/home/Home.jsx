@@ -20,9 +20,12 @@ import { fetchGatePass } from '../../api/gatePassApi';   // ✅ NEW IMPORT
 import { fetchAllSubjects, fetchENotes } from '../../api/eNotesApi';
 import { fetchDailyLearning } from '../../api/dailyLearningApi';
 import { fetchHostelMenu } from '../../api/hostelMenuApi';
+import { fetchMentorMenteeMeetings } from '../../api/mentormenteeMeeting';
 import { toast } from 'react-hot-toast'
 import { all } from 'axios';
 import HostelMenuu from './sections/HostelMenuu';
+import HostelRoomSection from './sections/HostelRoomSection';
+import MentorMentee from './sections/MentorMentee';
 
 const Home = () => {
 
@@ -32,6 +35,8 @@ const Home = () => {
   const [eNotes, setENotes] = useState([]);
   const [dailyLearning, setDailyLearning] = useState([]);
   const [hostelMenu, setHostelMenu] = useState([]);
+  const [mentorMeetings, setMentorMeetings] = useState([]);
+  const [mentorLoading, setMentorLoading] = useState(false);
 
   // ✅ Gate Pass states
   const [gatePasses, setGatePasses] = useState({
@@ -237,6 +242,43 @@ const Home = () => {
     }
   }, [student]);
 
+  // =========================
+  // 🚀 Mentor Mentee Meeting  Api
+  // =========================
+
+  const loadMentorMentee = async () => {
+    try {
+      setMentorLoading(true);
+
+      const res = await fetchMentorMenteeMeetings({
+        student_id: student?.id,
+        // school_id: student?.school_id // optional
+      });
+
+      // console.log("Mesntor-Mentee API Response:", res);
+
+      if (res.status) {
+        // 🔥 Optional: show only latest 3 (for home UI)
+        const latest = res.data.slice(0, 3);
+        setMentorMeetings(latest);
+      } else {
+        toast.error(res.message || "Failed to load mentor data");
+      }
+
+    } catch (err) {
+      console.error(err);
+      toast.error("Mentor API failed");
+    } finally {
+      setMentorLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (student?.id) {
+      loadMentorMentee();
+    }
+  }, [student]);
+
   return (
     <>
       <div className='flex flex-col gap-6 pt-4 pb-28'>
@@ -244,15 +286,16 @@ const Home = () => {
         <HomeHeader name="Rohan Sharma" />
         <HostelMenuu data={hostelMenu} />
         <QuickStats />
+        <DailyLearningSummaryCard
+          data={dailyLearning}
+        />
 
         <AcademicsSection
           admitCard={admitCard}
           loading={loading}
         />
 
-        <DailyLearningSummaryCard
-          data={dailyLearning}
-        />
+
 
         <ENotesSummaryCard
           totalNotes={totalNotes}
@@ -286,6 +329,13 @@ const Home = () => {
           rejected={gatePasses.rejected}
           all={gatePasses.all}
           refreshGatePass={loadGatePass}
+        />
+
+        <HostelRoomSection />
+
+        <MentorMentee
+          data={mentorMeetings}
+          loading={mentorLoading}
         />
       </div>
     </>

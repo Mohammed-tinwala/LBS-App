@@ -1,4 +1,5 @@
 import { GraduationCap, BookOpen, Star } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const QuickStats = () => {
     return (
@@ -10,7 +11,12 @@ const QuickStats = () => {
                 {/* Sub heading */}
                 <div className="flex items-center justify-between w-full mb-4">
                     <h2 className="text-lg font-semibold">Daily Learning</h2>
-                    <p className="text-xs font-normal">See more</p>
+                    <Link
+                        to="/daily-learning"
+                        className="text-xs text-gray-500 hover:text-gray-800"
+                    >
+                        See more
+                    </Link>
                 </div>
 
                 <div className="flex gap-4 items-start">

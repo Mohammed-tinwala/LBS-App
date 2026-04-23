@@ -22,7 +22,7 @@ const DailyLearningSummaryCard = ({ data = [] }) => {
         <div className="container-padding">
 
             {/* Header */}
-            <div className="flex items-center justify-between w-full mb-4">
+            {/* <div className="flex items-center justify-between w-full mb-4">
                 <h2 className="text-lg font-semibold">Daily Learning</h2>
 
                 <Link
@@ -31,7 +31,7 @@ const DailyLearningSummaryCard = ({ data = [] }) => {
                 >
                     See more
                 </Link>
-            </div>
+            </div> */}
 
             {/* Timeline */}
             {latestData.length === 0 ? (
