@@ -1,17 +1,12 @@
 import React from "react";
+import FeeSummaryLoader from "../../../components/loader/FeeSummaryLoader";
 
 const FeeSummary = ({ feeDetails, loading }) => {
 
-    // ⏳ Loading State
     if (loading) {
-        return (
-            <div className="container-padding">
-                <p className="text-sm text-gray-400">Loading fee details...</p>
-            </div>
-        );
+        return <FeeSummaryLoader />;
     }
 
-    // ⚠️ No Data State
     if (!feeDetails) {
         return (
             <div className="container-padding">
@@ -20,80 +15,107 @@ const FeeSummary = ({ feeDetails, loading }) => {
         );
     }
 
-    // ✅ Extract Data
-    const total = feeDetails.netPayable || 0;
+    const total = feeDetails.totalAmount || 0;
     const paid = feeDetails.totalPaid || 0;
     const due = feeDetails.remainingFee || 0;
 
-    // ✅ Safe Percent Calculation
-    const paidPercent = total > 0 ? (paid / total) * 100 : 0;
+    const discount = feeDetails.sessions?.reduce(
+        (sum, s) => sum + (s.lessAmount || 0),
+        0
+    ) || 0;
+
+    const finalPayable = total - discount;
+
+    const paidPercent = finalPayable > 0 ? (paid / finalPayable) * 100 : 0;
     const duePercent = 100 - paidPercent;
 
     return (
         <div className="container-padding">
 
-            {/* 🏫 School Name */}
+            {/* 🏫 Header */}
             <div className="mb-4">
                 <h2 className="text-base font-semibold text-black">
                     {feeDetails.school}
                 </h2>
                 <p className="text-xs text-gray-500">
-                    {feeDetails.merchantName ? `${feeDetails.merchantName}` : "No payment gateway info"}
+                    Enrollment: {feeDetails.enrollment}
                 </p>
             </div>
 
-            {/* 💰 Top Stats */}
-            <div className="grid grid-cols-3 gap-4 text-center sm:text-left">
+            {/* 💳 Card */}
+            <div className="bg-primary/30 shadow-sm rounded-2xl p-4 border border-gray-100">
 
-                <div className="flex flex-col items-start">
-                    <p className="text-label text-[12px]">Total Fees:</p>
-                    <h2 className="text-lg font-bold text-green-500 mt-1">
-                        ₹ {total.toLocaleString()}
-                    </h2>
-                </div>
+                {/* 🔼 Top Row: Total + Discount */}
+                <div className="flex justify-between items-center mb-4">
 
-                <div className="flex flex-col items-start">
-                    <p className="text-label text-[12px]">Paid:</p>
-                    <h2 className="text-lg font-bold text-green-500 mt-1">
-                        ₹ {paid.toLocaleString()}
-                    </h2>
-                </div>
+                    <div>
+                        <p className="text-xs text-gray-500">Total Fee</p>
+                        <h2 className="text-lg font-bold text-black">
+                            ₹ {total.toLocaleString()}
+                        </h2>
+                    </div>
 
-                <div className="flex flex-col items-start">
-                    <p className="text-label text-[12px]">Due:</p>
-                    <h2 className="text-lg font-bold text-red-500 mt-1">
-                        ₹ {due.toLocaleString()}
-                    </h2>
-                </div>
-
-            </div>
-
-            {/* 📊 Progress Bar */}
-            <div className="mt-4">
-
-                <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden flex">
-
-                    {/* Paid */}
-                    <div
-                        className="h-full bg-green-500 transition-all duration-500"
-                        style={{ width: `${paidPercent}%` }}
-                    />
-
-                    {/* Due */}
-                    <div
-                        className="h-full bg-red-500 transition-all duration-500"
-                        style={{ width: `${duePercent}%` }}
-                    />
+                    <div className="text-right">
+                        <p className="text-xs text-gray-500">Discount</p>
+                        <h2 className="text-lg font-bold text-blue-500">
+                            - ₹ {discount.toLocaleString()}
+                        </h2>
+                    </div>
 
                 </div>
 
-                <div className="flex justify-between mt-2 text-[12px]">
-                    <span className="text-green-500 font-medium">
-                        {Math.round(paidPercent)}% Paid
-                    </span>
-                    <span className="text-red-500 font-medium">
-                        {Math.round(duePercent)}% Due
-                    </span>
+                {/* 🔽 Bottom Row: Final | Paid | Due */}
+                <div className="grid grid-cols-3 gap-4 text-center border-t pt-4">
+
+                    <div>
+                        <p className="text-xs text-gray-500">Final</p>
+                        <h2 className="text-base font-semibold text-green-600">
+                            ₹ {finalPayable.toLocaleString()}
+                        </h2>
+                    </div>
+
+                    <div>
+                        <p className="text-xs text-gray-500">Paid</p>
+                        <h2 className="text-base font-semibold text-green-500">
+                            ₹ {paid.toLocaleString()}
+                        </h2>
+                    </div>
+
+                    <div>
+                        <p className="text-xs text-gray-500">Due</p>
+                        <h2 className="text-base font-semibold text-red-500">
+                            ₹ {due.toLocaleString()}
+                        </h2>
+                    </div>
+
+                </div>
+
+                {/* 📊 Progress */}
+                <div className="mt-5">
+
+                    <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden flex">
+
+                        <div
+                            className="h-full bg-green-500 transition-all duration-500"
+                            style={{ width: `${paidPercent}%` }}
+                        />
+
+                        <div
+                            className="h-full bg-red-500 transition-all duration-500"
+                            style={{ width: `${duePercent}%` }}
+                        />
+
+                    </div>
+
+                    <div className="flex justify-between mt-2 text-xs">
+                        <span className="text-green-500 font-medium">
+                            {Math.round(paidPercent)}% Paid
+                        </span>
+                        <span className="text-red-500 font-medium">
+                            {Math.round(duePercent)}% Due
+                        </span>
+                    </div>
+
                 </div>
 
             </div>

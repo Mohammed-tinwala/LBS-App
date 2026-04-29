@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import PageHeader from '../../components/common/headers/PageHeader'
 import { Bell } from "lucide-react"
 import { fetchNotifications } from '../../api/notificationApi'
+import NotificationLoader from '../../components/loader/NotificationLoader'
 import { useAuth } from '../../context/AuthContext'
 
 const NotificationScreen = () => {
@@ -40,7 +41,6 @@ const NotificationScreen = () => {
     }
   }, [student])
 
-
   // 📌 Grouping logic (Today / Yesterday / Older)
   const groupByDate = (data) => {
     const today = new Date().toDateString()
@@ -74,20 +74,25 @@ const NotificationScreen = () => {
     }))
   }
 
-
   return (
-    <div className='flex flex-col gap-4 pb-12 pt-4 bg-white'>
+    <div className='flex flex-col gap-4 pb-12 pt-4 bg-white min-h-screen'>
+
       <PageHeader title="Notifications" />
 
-      <div className="mt-2 space-y-6 container-padding">
+      {/* ✅ Loader (full control, no nested padding issue) */}
+      {loading ? (
+        <NotificationLoader />
+      ) : notifications.length === 0 ? (
 
-        {loading ? (
-          <p className="text-center text-label text-sm">Loading notifications...</p>
-        ) : notifications.length === 0 ? (
-          <p className="text-center text-label text-sm">No notifications found</p>
-        ) : (
+        <div className="flex justify-center items-center flex-1">
+          <p className="text-label text-sm">No notifications found</p>
+        </div>
 
-          notifications.map((group, index) => (
+      ) : (
+
+        <div className="mt-2 space-y-6 container-padding">
+
+          {notifications.map((group, index) => (
             <div key={index}>
 
               {/* Section Title */}
@@ -101,15 +106,9 @@ const NotificationScreen = () => {
               {/* Items */}
               <div className="space-y-6">
                 {group.items.map((item, i) => {
-                  const Icon = item.icon
 
                   return (
                     <div key={i} className="flex gap-4 items-start">
-
-                      {/* Icon */}
-                      {/* <div className={`w-12 h-12 rounded-full flex items-center justify-center ${item.color}`}>
-                        <Icon size={20} />
-                      </div> */}
 
                       {/* Content */}
                       <div className="flex-1">
@@ -124,10 +123,6 @@ const NotificationScreen = () => {
                           </span>
                         </div>
 
-                        {/* <p className="text-[12px] text-label line-clamp-2 mt-1 leading-relaxed">
-                          {item.desc}
-                        </p> */}
-
                       </div>
 
                     </div>
@@ -136,11 +131,12 @@ const NotificationScreen = () => {
               </div>
 
             </div>
-          ))
+          ))}
 
-        )}
+        </div>
 
-      </div>
+      )}
+
     </div>
   )
 }

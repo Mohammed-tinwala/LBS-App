@@ -10,7 +10,7 @@
   --color-primary-dark: #62399C;
   --color-label: #61677D;
   --color-bg: #ffffff;
-  --color-text: #000000;
+  --color-text: #1E2939;
   --color-input-bg: #E5E7EB;
 
   /* Spacing (8pt grid) */
@@ -229,5 +229,15 @@
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
   }
 }

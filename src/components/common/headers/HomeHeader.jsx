@@ -34,7 +34,7 @@ const HomeHeader = () => {
                 </div>
 
                 <div>
-                    <p className="text-[12px] text-label">Hello Welcome,</p>
+                    <p className="text-[12px] text-label">Hello Welcome</p>
                     <h3 className="text-[18px] leading-tight font-semibold">{formatName(student?.name) || "Student"}</h3>
                 </div>
             </Link>

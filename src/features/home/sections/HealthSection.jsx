@@ -38,14 +38,14 @@ const HealthSection = ({ height, weight, blood, diseases, medicines }) => {
             {/* Header */}
             <div className="flex items-center justify-between w-full mb-4">
                 <h2 className="text-lg font-semibold">Medical Data</h2>
-                <p className="text-xs font-normal">See more</p>
+                {/* <p className="text-xs font-normal">See more</p> */}
             </div>
 
             {/* Top Card */}
             <div className={`rounded-[28px] p-4 bg-linear-to-r ${bgGradient} shadow-md flex flex-row gap-2`}>
 
                 {/* Left Content */}
-                <div className="flex-1">
+                <div className="flex-1 flex flex-col items-start justify-center">
                     <h2 className="text-xl md:text-4xl font-bold mb-3">
                         {healthStatus}
                     </h2>
@@ -64,9 +64,9 @@ const HealthSection = ({ height, weight, blood, diseases, medicines }) => {
                         </p>
                     )}
 
-                    <button className="bg-black text-white px-5 py-2 rounded-full text-xs flex items-center gap-2 w-fit">
+                    {/* <button className="bg-black text-white px-5 py-2 rounded-full text-xs flex items-center gap-2 w-fit">
                         Learn more <ArrowUpRight size={16} />
-                    </button>
+                    </button> */}
                 </div>
 
                 {/* Right Score */}

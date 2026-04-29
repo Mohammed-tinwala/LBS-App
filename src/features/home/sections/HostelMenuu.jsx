@@ -88,6 +88,8 @@ const HostelMenuu = ({ data = [] }) => {
                 </div>
             </div>
 
+            
+
             {/* ❌ No data */}
             {!todayMenu && (
                 <p className="text-sm text-gray-400">No menu available for today</p>

@@ -29,7 +29,7 @@ const GatePassSection = ({ pending = [], approved = [], rejected = [], all = [],
             </div>
 
             {/* Card */}
-            <div className="relative rounded-[28px] p-5 bg-gradient-to-br from-[#0F172A] to-[#020617] text-white">
+            <div className="relative rounded-[28px] p-5 bg-linear-to-br from-[#0F172A] to-[#020617] text-white">
 
                 <div className="flex justify-between mb-4">
                     <h2 className="text-xl font-semibold">Requests</h2>

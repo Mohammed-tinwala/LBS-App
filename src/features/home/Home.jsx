@@ -21,11 +21,15 @@ import { fetchAllSubjects, fetchENotes } from '../../api/eNotesApi';
 import { fetchDailyLearning } from '../../api/dailyLearningApi';
 import { fetchHostelMenu } from '../../api/hostelMenuApi';
 import { fetchMentorMenteeMeetings } from '../../api/mentormenteeMeeting';
+import { fetchVisitorPass } from '../../api/visitorPassApi';
+import { fetchOutingRequest } from '../../api/outingReqApi';
+
 import { toast } from 'react-hot-toast'
 import { all } from 'axios';
 import HostelMenuu from './sections/HostelMenuu';
 import HostelRoomSection from './sections/HostelRoomSection';
 import MentorMentee from './sections/MentorMentee';
+import VisitorPassSection from './sections/VisitorPassSections';
 
 const Home = () => {
 
@@ -40,6 +44,22 @@ const Home = () => {
 
   // ✅ Gate Pass states
   const [gatePasses, setGatePasses] = useState({
+    pending: [],
+    approved: [],
+    rejected: [],
+    all: []
+  });
+
+  // Visitor Pass states
+  const [visitorPasses, setVisitorPasses] = useState({
+    pending: [],
+    approved: [],
+    rejected: [],
+    all: []
+  });
+
+  // Outing Pass states
+  const [outingPasses, setOutingPasses] = useState({
     pending: [],
     approved: [],
     rejected: [],
@@ -122,6 +142,58 @@ const Home = () => {
   useEffect(() => {
     if (student?.id) loadGatePass();
   }, [student]);
+
+
+  // =========================
+  // Visitor Pass Api
+  // =========================
+
+  const loadVisitorPass = async () => {
+    try {
+      const res = await fetchVisitorPass(student.id, 2);
+
+      if (res.status) {
+        setVisitorPasses({
+          pending: res.pending || [],
+          approved: res.approved || [],
+          rejected: res.rejected || [],
+          all: res.all || []
+        });
+      }
+    } catch (err) {
+      toast.error("Failed to load visitor pass data");
+    }
+  };
+
+  useEffect(() => {
+    if (student?.id) loadVisitorPass();
+  }, [student]);
+
+  // =========================
+  // Outing Pass Api
+  // =========================
+
+  const loadOutingPass = async () => {
+    try {
+      const res = await fetchOutingRequest(student.id, 2);
+
+      if (res.status) {
+        setOutingPasses({
+          pending: res.pending || [],
+          approved: res.approved || [],
+          rejected: res.rejected || [],
+          all: res.all || []
+        });
+      }
+    } catch (err) {
+      toast.error("Failed to load outing requests");
+    }
+  };
+
+  useEffect(() => {
+    if (student?.id) loadOutingPass();
+  }, [student]);
+
 
   // =========================
   // 🚀 All Subjects Api (NEW)
@@ -295,8 +367,6 @@ const Home = () => {
           loading={loading}
         />
 
-
-
         <ENotesSummaryCard
           totalNotes={totalNotes}
           subjects={totalSubjects}
@@ -304,6 +374,13 @@ const Home = () => {
           eNotes={eNotes}
           allSubjects={allSubjects}
         />
+
+        <MentorMentee
+          data={mentorMeetings}
+          loading={mentorLoading}
+        />
+
+        <HostelRoomSection />
 
         {/* <HostelMenu /> */}
 
@@ -322,7 +399,6 @@ const Home = () => {
         <GallerySection />
         <PTMSlotSection />
 
-        {/* ✅ PASS GATE PASS DATA */}
         <GatePassSection
           pending={gatePasses.pending}
           approved={gatePasses.approved}
@@ -331,12 +407,17 @@ const Home = () => {
           refreshGatePass={loadGatePass}
         />
 
-        <HostelRoomSection />
-
-        <MentorMentee
-          data={mentorMeetings}
-          loading={mentorLoading}
+        <VisitorPassSection
+          pending={visitorPasses.pending}
+          approved={visitorPasses.approved}
+          rejected={visitorPasses.rejected}
+          all={visitorPasses.all}
+          refreshVisitorPass={loadVisitorPass}
         />
+
+
+
+
       </div>
     </>
   )

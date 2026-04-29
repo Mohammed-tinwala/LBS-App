@@ -6,58 +6,47 @@ import PaymentInfoSection from './section/PaymentInfoSection';
 import GeneralInfoSection from './section/GeneralInfoSection';
 import StudentDocumentsSection from './section/StudentDocumentsSection';
 import { useAuth } from '../../context/AuthContext';
-import { getStudentProfile } from '../../api/studentApi';
-import ProfileSkeleton from '../../components/loader/ProfileSkeleton';
-import { toast } from 'react-hot-toast';
+// import ProfileSkeleton from '../../components/loader/ProfileSkeleton';
+import AppLoader from '../../components/loader/AppLoader';
 import LogoutSection from './section/LogoutSection';
+import HostelRoomSection from '../home/sections/HostelRoomSection';
 
 const ProfileScreen = () => {
 
-    const { student, profile, setProfile } = useAuth(); // ✅ use global profile
+    const { profile, loading } = useAuth();
 
-    const [loading, setLoading] = useState(true);
+    const [showEmptyState, setShowEmptyState] = useState(false);
 
+    // ✅ Delay showing "No data"
     useEffect(() => {
-        const fetchProfile = async () => {
-            try {
-                setLoading(true);
+        let timer;
 
-                const res = await getStudentProfile(
-                    student?.id,
-                    student?.school_id
-                );
-
-                if (res.status) {
-                    setProfile(res.data); // ✅ store globally
-                } else {
-                    toast.error("Failed to load profile");
-                }
-
-            } catch (err) {
-                console.error(err);
-                toast.error("Server error");
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        if (student?.id) {
-            fetchProfile();
+        if (!loading && !profile) {
+            timer = setTimeout(() => {
+                setShowEmptyState(true);
+            }, 1500); // ⏱️ 1.5 sec delay
         }
-    }, [student, setProfile]);
 
-    // ✅ Loading UI
+        return () => clearTimeout(timer);
+    }, [loading, profile]);
+
+    // ✅ Still loading → show skeleton
     if (loading) {
-        return <ProfileSkeleton />;
+        return <AppLoader />;
     }
 
-    // ✅ Safety fallback
-    if (!profile) {
+    // ✅ After delay → show empty state
+    if (!profile && showEmptyState) {
         return (
             <div className="flex-center h-screen">
                 <p>No profile data found</p>
             </div>
         );
+    }
+
+    // ✅ While waiting for delay → show skeleton
+    if (!profile) {
+        return <AppLoader />;
     }
 
     return (
@@ -71,6 +60,7 @@ const ProfileScreen = () => {
                 <PersonalInfo profile={profile} />
                 <PaymentInfoSection profile={profile} />
                 <StudentDocumentsSection profile={profile} />
+                <HostelRoomSection />
                 <GeneralInfoSection profile={profile} />
                 <LogoutSection />
 

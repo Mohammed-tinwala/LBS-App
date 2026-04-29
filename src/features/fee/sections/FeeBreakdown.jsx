@@ -1,7 +1,23 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import FeeBreakdownLoader from '../../../components/loader/FeeBreakdownLoader'
 import { Bus, ChevronRight, CreditCard, FlaskConical, Palette } from 'lucide-react'
 
-const FeeBreakdown = () => {
+const FeeBreakdown = ({ session }) => {
+
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setLoading(false);
+        }, 10000); // ⏱️ 2 seconds
+
+        return () => clearTimeout(timer); // cleanup
+    }, []);
+
+    if (loading) {
+        return <FeeBreakdownLoader />;
+    }
+
     return (
         <div className='container-padding'>
             {/* Sub heading */}
@@ -47,7 +63,7 @@ const FeeBreakdown = () => {
                     </div>
                     <ChevronRight size={24} className='text-black' />
                 </div>
-                
+
             </div>
         </div>
     )

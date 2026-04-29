@@ -81,21 +81,21 @@ const QuickStats = () => {
             </div>
 
             {/* Bottom Card */}
-            <div className="w-full rounded-[28px] bg-[#E8DCF9] px-5 py-4 flex items-center justify-between shadow-sm">
+            <div className="w-full rounded-[28px] bg-[#E8DCF9] px-4 py-4 flex items-center justify-between shadow-sm">
 
                 {/* Left */}
                 <div className="flex items-center gap-4">
 
                     {/* Icon */}
                     <div className="w-14 h-14 rounded-full bg-lime-300 flex items-center justify-center">
-                        <GraduationCap size={26} className="text-black" />
+                        <GraduationCap size={24} className="text-black" />
                     </div>
 
                     {/* Text */}
                     <div>
                         <h3 className="text-lg font-semibold">Progress</h3>
 
-                        <div className="flex items-center gap-2 text-sm text-black/80">
+                        <div className="flex items-center mt-1 gap-2 text-xs text-black/80">
                             <BookOpen size={16} />
                             <span>Learning Activity</span>
                         </div>
@@ -106,7 +106,7 @@ const QuickStats = () => {
                 {/* Right */}
                 <div className="text-right">
                     <h2 className="text-[24px] font-bold">67%</h2>
-                    <p className="text-sm text-black/60">4 Subjects</p>
+                    <p className="text-xs text-black/60">4 Subjects</p>
                 </div>
 
             </div>

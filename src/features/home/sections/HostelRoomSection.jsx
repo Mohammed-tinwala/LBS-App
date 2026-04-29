@@ -1,10 +1,18 @@
 import { BedDouble, Home, ArrowUpRight } from "lucide-react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import RoomView from "../../../components/room3d/RoomView";
 import { roomBeds } from "../../../data/roomData";
 
 const HostelRoomSection = ({ roomData }) => {
     const navigate = useNavigate();
+
+    const [resetTrigger, setResetTrigger] = useState(0);
+
+    const handleReset = (e) => {
+        e.stopPropagation();
+        setResetTrigger(prev => prev + 1); // triggers camera reset
+    };
 
     const handleNavigation = (e) => {
         e.stopPropagation();
@@ -18,7 +26,7 @@ const HostelRoomSection = ({ roomData }) => {
             <div className="bg-primary/30 border rounded-3xl p-4 shadow-sm">
 
                 {/* Header */}
-                <div className="flex justify-between items-start mb-4">
+                <div className="flex justify-between items-center mb-4">
                     <div>
                         <h2 className="text-[18px] font-semibold text-black">
                             Hostel Room
@@ -28,19 +36,38 @@ const HostelRoomSection = ({ roomData }) => {
                         </p>
                     </div>
 
-                    <div
+                    {/* <div
                         onClick={handleNavigation}
                         className="w-9 h-9 bg-primary-dark/80 rounded-full flex items-center justify-center cursor-pointer"
                     >
                         <ArrowUpRight size={18} className="text-white" />
+                    </div> */}
+
+                    <div>
+                        <button
+                            onClick={handleReset}
+                            className="bg-white/90 backdrop-blur px-3 py-1 rounded-lg text-xs shadow"
+                        >
+                            Reset View
+                        </button>
                     </div>
+
                 </div>
 
                 {/* 3D Room Preview */}
                 <div className="w-full h-55 rounded-2xl overflow-hidden border mb-4 bg-white relative">
                     <div className="absolute inset-0">
-                        <RoomView beds={roomBeds} />
+                        <RoomView beds={roomBeds} resetTrigger={resetTrigger} />
                     </div>
+
+                    {/* <div className="absolute top-2 right-2 z-10">
+                        <button
+                            onClick={handleReset}
+                            className="bg-white/90 backdrop-blur px-3 py-1 rounded-lg text-xs shadow"
+                        >
+                            Reset View
+                        </button>
+                    </div> */}
                 </div>
 
                 {/* Info Cards */}
@@ -89,12 +116,12 @@ const HostelRoomSection = ({ roomData }) => {
                 </div>
 
                 {/* CTA */}
-                <button
+                {/* <button
                     onClick={handleNavigation}
                     className="w-full mt-4 h-11 bg-primary text-white rounded-2xl text-sm font-medium"
                 >
                     View Room Details
-                </button>
+                </button> */}
 
             </div>
 

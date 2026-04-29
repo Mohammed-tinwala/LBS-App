@@ -46,7 +46,7 @@ const MentorMentee = ({ data = [], loading }) => {
             {/* 🔷 HEADER */}
             <div className="w-full flex justify-between items-center mb-6">
                 <div className="w-3/4 flex flex-col">
-                    <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+                    <h2 className="text-2xl font-bold flex items-center gap-2">
                         <Sparkles className="text-primary-dark" size={20} />
                         Mentor Insights
                     </h2>
@@ -57,7 +57,7 @@ const MentorMentee = ({ data = [], loading }) => {
 
                 <Link
                     to="/mentor-meetings"
-                    className="text-xs text-label hover:text-gray-800"
+                    className="text-xs text-label"
                 >
                     See more
                 </Link>
