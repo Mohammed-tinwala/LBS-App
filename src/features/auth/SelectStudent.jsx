@@ -15,7 +15,7 @@ const SelectStudent = () => {
         name.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
 
     return (
-        <div className="h-screen flex flex-col items-center justify-center px-4">
+        <div className="min-h-screen flex flex-col items-center justify-center px-4">
 
             <h2 className="text-xl font-semibold mb-6">
                 Select Student

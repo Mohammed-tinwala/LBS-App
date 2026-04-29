@@ -107,7 +107,7 @@ const Login = () => {
     const isDisabled = !form.mobile || !form.password || loading
 
     return (
-        <div className='h-screen flex-center flex-col safe-area max-w-7xl mx-auto px-4'>
+        <div className='min-h-screen flex-center flex-col safe-area max-w-7xl mx-auto px-4'>
 
             {/* Logo */}
             <div className='w-18 h-18 bg-primary/40 p-2.5 mb-4 rounded-2xl flex-center'>

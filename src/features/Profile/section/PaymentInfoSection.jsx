@@ -17,7 +17,7 @@ const PaymentInfoSection = () => {
             {/* Sub heading */}
             <div className="flex items-center justify-between w-full mb-4">
                 <h2 className="text-lg font-semibold">Payment Info</h2>
-                <p className="text-xs font-normal">See more</p>
+                {/* <p className="text-xs font-normal">See more</p> */}
             </div>
 
             <div className='flex flex-col sm:flex-row items-center gap-4 sm:gap-2 justify-between'>

@@ -1,20 +1,19 @@
 import { Outlet } from "react-router-dom";
 import BottomNavbar from "../components/common/bottom-navbar/BottomNavbar";
 
-
 const MainLayout = () => {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="h-full flex flex-col">
 
-      {/* Page Content */}
-      <div className="flex-1 pb-20">
+      {/* Content should NOT control scroll */}
+      <div className="flex-1 overflow-visible pb-24">
         <Outlet />
       </div>
 
-
-      {/* Bottom Navbar (FIXED) */}
-      <BottomNavbar />
-
+      {/* ✅ Fixed Navbar */}
+      <div className="fixed bottom-0 left-0 w-full z-[9999]">
+        <BottomNavbar />
+      </div>
 
     </div>
   );

@@ -19,7 +19,7 @@ export default function SplashScreen() {
     }, [student, navigate]);
 
     return (
-        <div className="h-screen flex-center flex-col safe-area">
+        <div className="min-h-screen flex-center flex-col safe-area">
 
             {/* Logo */}
             <img

@@ -8,7 +8,7 @@ const GeneralInfoSection = () => {
             {/* Sub heading */}
             <div className="flex items-center justify-between w-full mb-4">
                 <h2 className="text-lg font-semibold">General Info</h2>
-                <p className="text-xs font-normal">See more</p>
+                {/* <p className="text-xs font-normal">See more</p> */}
             </div>
 
             <div className='bg-primary/30 p-4 flex flex-col gap-3 rounded-2xl'>

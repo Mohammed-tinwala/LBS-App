@@ -2,7 +2,7 @@ import React from "react";
 
 const PageLoader = () => {
     return (
-        <div className="h-screen w-full flex flex-col items-center justify-center bg-white">
+        <div className="min-h-screen w-full flex flex-col items-center justify-center bg-white">
 
             {/* Logo Glow */}
             <div className="relative">

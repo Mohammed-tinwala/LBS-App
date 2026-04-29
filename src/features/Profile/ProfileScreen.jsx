@@ -38,7 +38,7 @@ const ProfileScreen = () => {
     // ✅ After delay → show empty state
     if (!profile && showEmptyState) {
         return (
-            <div className="flex-center h-screen">
+            <div className="flex-center min-h-screen">
                 <p>No profile data found</p>
             </div>
         );
