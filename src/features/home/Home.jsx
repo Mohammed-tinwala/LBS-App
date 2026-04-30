@@ -23,6 +23,7 @@ import { fetchHostelMenu } from '../../api/hostelMenuApi';
 import { fetchMentorMenteeMeetings } from '../../api/mentormenteeMeeting';
 import { fetchVisitorPass } from '../../api/visitorPassApi';
 import { fetchOutingRequest } from '../../api/outingReqApi';
+import { fetchStudentAttendance } from '../../api/studentAttendanceApi';
 
 import { toast } from 'react-hot-toast'
 import { all } from 'axios';
@@ -65,6 +66,15 @@ const Home = () => {
     rejected: [],
     all: []
   });
+
+  // Attendance states
+  const [attendanceData, setAttendanceData] = useState([]);
+  const [attendanceSummary, setAttendanceSummary] = useState({
+    total_days: 0,
+    present: 0,
+    absent: 0
+  });
+  const [attendanceLoading, setAttendanceLoading] = useState(false);
 
   const [loading, setLoading] = useState(true);
 
@@ -351,6 +361,42 @@ const Home = () => {
     }
   }, [student]);
 
+  // =========================
+  // 🚀 Attendance API
+  // =========================
+  const loadAttendance = async () => {
+    try {
+      setAttendanceLoading(true);
+
+      const res = await fetchStudentAttendance({
+        student_id: student?.id,
+        db_school: 2,
+        // optional:
+        // from_date: "2026-04-01",
+        // to_date: "2026-04-30"
+      });
+
+      if (res.status) {
+        setAttendanceData(res.data || []);
+        setAttendanceSummary(res.summary || {});
+      } else {
+        toast.error(res.message || "Failed to load attendance");
+      }
+
+    } catch (err) {
+      console.error(err);
+      toast.error("Attendance API failed");
+    } finally {
+      setAttendanceLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (student?.id) {
+      loadAttendance();
+    }
+  }, [student]);
+
   return (
     <>
       <div className='flex flex-col gap-6 pt-4 pb-28'>
@@ -395,7 +441,14 @@ const Home = () => {
 
         <EVideosSection />
         <CallingSection />
-        <AttendanceSection />
+
+        <AttendanceSection
+          data={attendanceData}
+          summary={attendanceSummary}
+          loading={attendanceLoading}
+          refreshAttendance={loadAttendance}
+        />
+
         <GallerySection />
         <PTMSlotSection />
 

@@ -80,7 +80,7 @@ const FeeDetailScreen = () => {
             <PageHeader title="Fee Detail Page" color="white" />
 
             {/* ✅ Main Content */}
-            <div className='flex flex-col gap-4 pb-40 bg-white py-4 rounded-t-[50px]'>
+            <div className='flex flex-col gap-4 pb-40 bg-white py-4 mt-4 rounded-t-[50px]'>
 
                 <ProfileHeader about="hidden" profile={profile} />
 
@@ -112,7 +112,7 @@ const FeeDetailScreen = () => {
 
             {feeDetails?.remainingFee > 0 &&
                 createPortal(
-                    <div className="fixed bottom-0 left-0 w-full bg-white border-t shadow-lg z-[9999] px-4 py-3">
+                    <div className="fixed bottom-0 left-0 w-full bg-white border-t shadow-lg z-9999 px-4 py-3">
                         <button
                             onClick={() => console.log("Proceed to payment")}
                             className="w-full bg-primary text-white font-semibold py-3 rounded-xl text-lg"

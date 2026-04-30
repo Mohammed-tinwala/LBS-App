@@ -1,89 +1,168 @@
-import React, { useState } from "react";
-import { Send, Paperclip, MessageCircle, Clock } from "lucide-react";
-import PageHeader from '../../components/common/headers/PageHeader'
+import React, { useState, useEffect } from "react";
+import { Send, Paperclip, MessageCircle } from "lucide-react";
+import PageHeader from '../../components/common/headers/PageHeader';
+import { fetchAllSubjects } from '../../api/eNotesApi';
 
-const dummyDoubts = [
-    {
-        id: 1,
-        subject: "Math",
-        title: "Doubt in Quadratic Equation",
-        message: "I didn’t understand factorization method",
-        status: "pending",
-        replies: [],
-        date: "2026-04-20",
-    },
-    {
-        id: 2,
-        subject: "Science",
-        title: "What is Photosynthesis?",
-        message: "Explain in simple terms",
-        status: "answered",
-        replies: [
-            {
-                by: "Teacher",
-                text: "It is the process by which plants make food using sunlight.",
-            },
-        ],
-        date: "2026-04-19",
-    },
-];
+import { useAuth } from '../../context/AuthContext';
+import { fetchDoubts, submitDoubt } from '../../api/doubtApi';
+import { toast } from "react-hot-toast";
+import Loader from '../../components/loader/Loader';
 
 const DoubtPage = () => {
+
+    const { student } = useAuth();
+
     const [form, setForm] = useState({
         subject: "",
-        title: "",
         message: "",
+        image: null
     });
 
-    const [doubts, setDoubts] = useState(dummyDoubts);
+    const [doubts, setDoubts] = useState([]);
+    const [subjects, setSubjects] = useState([]);
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+    const [loading, setLoading] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
 
-        const newDoubt = {
-            id: Date.now(),
-            subject: form.subject,
-            title: form.title,
-            message: form.message,
-            status: "pending",
-            replies: [],
-            date: new Date().toISOString(),
-        };
+    // =========================
+    // 📥 FETCH DOUBTS
+    // =========================
+    const loadDoubts = async () => {
+        try {
+            setLoading(true);
 
-        setDoubts([newDoubt, ...doubts]);
+            const res = await fetchDoubts({
+                std_id: student?.id
+            });
 
-        setForm({ subject: "", title: "", message: "" });
+            if (res.status) {
+
+                const allDoubts = res.all.map(item => ({
+                    id: item.id,
+                    subject: item.subject,
+                    message: item.doubt,
+                    status: item.status,
+
+                    // 🖼️ Student Image
+                    image: item.image
+                        ? `https://lbsschool.in/old/lms/MobileAppBackend/uploads/doubts/${item.image}`
+                        : null,
+
+                    // 💬 Replies
+                    replies: item.answer !== "NA" ? [{
+                        by: item.answered_by,
+                        text: item.answer,
+                        image: item.ans_image
+                            ? `https://lbsschool.in/old/lms/MobileAppBackend/uploads/doubts/${item.ans_image}`
+                            : null
+                    }] : [],
+
+                    date: item.timestamp
+                }));
+
+                setDoubts(allDoubts);
+
+            } else {
+                toast.error(res.message || "Failed to load doubts");
+            }
+
+        } catch (err) {
+            console.error(err);
+            toast.error("Error loading doubts");
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const getStatusStyle = (status) => {
-        switch (status) {
-            case "answered":
-                return "bg-green-100 text-green-600";
-            case "closed":
-                return "bg-gray-200 text-gray-600";
-            default:
-                return "bg-yellow-100 text-yellow-600";
+    useEffect(() => {
+        if (student?.id) loadDoubts();
+    }, [student]);
+
+    // =========================
+    // 📩 SUBMIT DOUBT
+    // =========================
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (!form.subject || !form.message) {
+            return toast.error("Please fill all fields");
         }
+
+        try {
+            setSubmitting(true);
+
+            const res = await submitDoubt({
+                std_id: student?.id,
+                class_id: student?.class_id,
+                subject: form.subject,
+                doubt: form.message,
+                image: form.image
+            });
+
+            if (res.status) {
+                toast.success("Doubt submitted ✅");
+
+                setForm({
+                    subject: "",
+                    message: "",
+                    image: null
+                });
+
+                loadDoubts();
+
+            } else {
+                toast.error(res.message || "Submit failed");
+            }
+
+        } catch (err) {
+            console.error(err);
+            toast.error("Submit error");
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    // =========================
+    // 📚 LOAD SUBJECTS
+    // =========================
+    const loadSubjects = async () => {
+        try {
+            const res = await fetchAllSubjects();
+
+            if (res.status) {
+                setSubjects(res.subjects || []);
+            } else {
+                toast.error(res.message || "Failed to load subjects");
+            }
+
+        } catch (err) {
+            console.error(err);
+            toast.error("Subjects API failed");
+        }
+    };
+
+    useEffect(() => {
+        if (student?.class_id) loadSubjects();
+    }, [student]);
+
+    // =========================
+    // 🎨 STATUS STYLE
+    // =========================
+    const getStatusStyle = (status) => {
+        return status === "answered"
+            ? "bg-green-100 text-green-600"
+            : "bg-yellow-100 text-yellow-600";
     };
 
     return (
         <div className="flex flex-col min-h-screen bg-primary pt-4">
 
-            {/* Header */}
-            {/* <div className="px-5 text-white">
-                <h2 className="text-lg font-semibold">Ask a Doubt</h2>
-                <p className="text-xs opacity-80">
-                    Get your doubts solved by teachers quickly
-                </p>
-            </div> */}
-
             <PageHeader title="Ask a Doubt" color="white" />
 
-            {/* Main */}
-            <div className="bg-white rounded-t-[40px] mt-4 px-5 py-6 flex flex-col gap-6">
+            <div className="container-padding bg-white rounded-t-[40px] mt-4 px-5 flex flex-col gap-6">
 
-                {/* 📝 Ask Doubt Form */}
-                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                {/* 📝 FORM */}
+                <form onSubmit={handleSubmit} className="flex flex-col gap-4 mt-4">
 
                     <select
                         value={form.subject}
@@ -93,20 +172,13 @@ const DoubtPage = () => {
                         className="border px-4 py-3 rounded-2xl"
                     >
                         <option value="">Select Subject</option>
-                        <option value="Math">Math</option>
-                        <option value="Science">Science</option>
-                        <option value="English">English</option>
-                    </select>
 
-                    <input
-                        type="text"
-                        placeholder="Doubt title"
-                        value={form.title}
-                        onChange={(e) =>
-                            setForm({ ...form, title: e.target.value })
-                        }
-                        className="border px-4 py-3 rounded-2xl"
-                    />
+                        {subjects.map((sub) => (
+                            <option key={sub.id} value={sub.name}>
+                                {sub.name}
+                            </option>
+                        ))}
+                    </select>
 
                     <textarea
                         placeholder="Explain your doubt..."
@@ -118,30 +190,61 @@ const DoubtPage = () => {
                         className="border px-4 py-3 rounded-2xl"
                     />
 
-                    {/* File Upload */}
+                    {/* 📎 FILE + BUTTON */}
                     <div className="flex justify-between items-center">
                         <label className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-xl cursor-pointer">
                             <Paperclip size={16} />
                             Attach
-                            <input type="file" className="hidden" />
+                            <input
+                                type="file"
+                                className="hidden"
+                                onChange={(e) =>
+                                    setForm({ ...form, image: e.target.files[0] })
+                                }
+                            />
                         </label>
 
                         <button
                             type="submit"
-                            className="flex items-center gap-2 bg-primary text-white px-5 py-2 rounded-xl"
+                            disabled={submitting}
+                            className={`flex items-center justify-center gap-2 px-5 py-2 rounded-xl text-white 
+    ${submitting ? "bg-gray-400 cursor-not-allowed" : "bg-primary"}`}
                         >
-                            <Send size={16} />
-                            Submit
+                            {submitting ? (
+                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                            ) : (
+                                <>
+                                    <Send size={16} />
+                                    Submit
+                                </>
+                            )}
                         </button>
                     </div>
+
+                    {/* 📎 FILE NAME */}
+                    {form.image && (
+                        <div className="flex justify-between items-center text-xs text-gray-500">
+                            <span>📎 {form.image.name}</span>
+                            <button
+                                type="button"
+                                onClick={() => setForm({ ...form, image: null })}
+                                className="text-red-500"
+                            >
+                                Remove
+                            </button>
+                        </div>
+                    )}
+
                 </form>
 
-                {/* 📚 Doubt List */}
+                {/* 📚 LIST */}
                 <div className="flex flex-col gap-4">
 
                     <h3 className="text-md font-semibold">Your Doubts</h3>
 
-                    {doubts.length === 0 ? (
+                    {loading ? (
+                        <p className="text-sm text-gray-400">Loading...</p>
+                    ) : doubts.length === 0 ? (
                         <p className="text-sm text-gray-400">No doubts yet</p>
                     ) : (
                         doubts.map((doubt) => (
@@ -154,18 +257,14 @@ const DoubtPage = () => {
                                 <div className="flex justify-between items-center">
                                     <div>
                                         <h4 className="font-semibold text-gray-800">
-                                            {doubt.title}
+                                            {doubt.subject}
                                         </h4>
                                         <p className="text-xs text-gray-500">
                                             {doubt.subject}
                                         </p>
                                     </div>
 
-                                    <span
-                                        className={`text-xs px-3 py-1 rounded-full ${getStatusStyle(
-                                            doubt.status
-                                        )}`}
-                                    >
+                                    <span className={`text-xs px-3 py-1 rounded-full ${getStatusStyle(doubt.status)}`}>
                                         {doubt.status}
                                     </span>
                                 </div>
@@ -175,16 +274,37 @@ const DoubtPage = () => {
                                     {doubt.message}
                                 </p>
 
-                                {/* Replies */}
+                                {/* 🖼️ Student Image */}
+                                {doubt.image && (
+                                    <img
+                                        src={doubt.image}
+                                        alt="doubt"
+                                        className="w-full max-h-52 object-cover rounded-xl border"
+                                    />
+                                )}
+
+                                {/* 💬 Reply */}
                                 {doubt.replies.length > 0 && (
-                                    <div className="bg-gray-50 p-3 rounded-xl">
-                                        <p className="text-xs text-gray-500 mb-1">
+                                    <div className="bg-gray-50 border border-gray-300 p-3 rounded-xl">
+                                        <p className="text-xs text-gray-500 mb-2">
                                             Teacher Reply:
                                         </p>
+
                                         {doubt.replies.map((r, i) => (
-                                            <p key={i} className="text-sm text-gray-700">
-                                                {r.text}
-                                            </p>
+                                            <div key={i} className="flex flex-col gap-2">
+                                                <p className="text-sm text-gray-700">
+                                                    {r.text}
+                                                </p>
+
+                                                {/* 🖼️ Teacher Image */}
+                                                {r.image && (
+                                                    <img
+                                                        src={r.image}
+                                                        alt="answer"
+                                                        className="w-full max-h-48 object-cover rounded-lg border"
+                                                    />
+                                                )}
+                                            </div>
                                         ))}
                                     </div>
                                 )}
@@ -200,6 +320,7 @@ const DoubtPage = () => {
                                         {doubt.replies.length}
                                     </span>
                                 </div>
+
                             </div>
                         ))
                     )}
