@@ -1,9 +1,6 @@
-import { useState } from "react";
-import { ArrowUpRight, Plus, Clock, CheckCircle2, XCircle } from "lucide-react";
-import { Link } from "react-router-dom";
-import { createOutingRequest } from "../../../api/outingReqApi";
-import Loader from "../../../components/loader/Loader";
-import { useAuth } from "../../../context/AuthContext";
+import React, { useState } from "react";
+import { ArrowUpRight, Bus } from "lucide-react";
+import { updateOutingStatus } from "../../../api/outingReqApi";
 import { toast } from "react-hot-toast";
 
 const OutingReqSection = ({
@@ -11,251 +8,152 @@ const OutingReqSection = ({
     approved = [],
     rejected = [],
     all = [],
-    refreshOutingPass
+    refreshOuting
 }) => {
 
-    const [open, setOpen] = useState(false);
+    const [loadingId, setLoadingId] = useState(null);
 
-    // ✅ Merge + latest 3
-    const requests = [
-        ...pending.map(i => ({ ...i, status: "pending" })),
-        ...approved.map(i => ({ ...i, status: "approved" })),
-        ...rejected.map(i => ({ ...i, status: "rejected" })),
-    ].slice(0, 3);
-
-    return (
-        <div className="container-padding">
-
-            {/* Header */}
-            <div className="flex items-center justify-between w-full mb-4">
-                <h2 className="text-lg font-semibold">Outing Request</h2>
-                <p className="text-xs text-label">View all</p>
-            </div>
-
-            {/* Card */}
-            <div className="relative rounded-[28px] p-5 bg-linear-to-br from-[#0F172A] to-[#020617] text-white">
-
-                <div className="flex justify-between mb-4">
-                    <h2 className="text-xl font-semibold">Requests</h2>
-                    <Link to="/outing-history" className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                        <ArrowUpRight />
-                    </Link>
-                </div>
-
-                {/* Requests */}
-                <div className="space-y-3 mb-4">
-
-                    {requests.length === 0 && (
-                        <p className="text-sm text-white/60">No requests yet</p>
-                    )}
-
-                    {requests.map((item) => (
-                        <div key={item.id} className="flex justify-between bg-white/10 px-3 py-2 rounded-xl">
-
-                            <div>
-                                <p className="text-sm">{item.outingplace_name}</p>
-                                <p className="text-xs text-white/60">
-                                    {item.visiting_date} • {item.visiting_time}
-                                </p>
-                            </div>
-
-                            <div className="flex items-center gap-2 text-xs">
-                                {item.status === "approved" && (
-                                    <CheckCircle2 className="text-green-400" size={16} />
-                                )}
-                                {item.status === "pending" && (
-                                    <Clock className="text-yellow-400" size={16} />
-                                )}
-                                {item.status === "rejected" && (
-                                    <XCircle className="text-red-400" size={16} />
-                                )}
-                            </div>
-
-                        </div>
-                    ))}
-
-                </div>
-
-                {/* CTA */}
-                <button
-                    onClick={() => setOpen(true)}
-                    className="w-full bg-white text-black py-2 rounded-full flex items-center justify-center gap-2"
-                >
-                    <Plus size={16} />
-                    Apply Outing Request
-                </button>
-            </div>
-
-            {/* Modal */}
-            {open && (
-                <OutingPassModal
-                    onClose={() => setOpen(false)}
-                    refreshOutingPass={refreshOutingPass}
-                />
-            )}
-        </div>
-    );
-};
-
-export default OutingReqSection;
-
-
-
-/* ================= MODAL ================= */
-const OutingPassModal = ({ onClose, refreshOutingPass }) => {
-
-    const { student } = useAuth();
-    const [loading, setLoading] = useState(false);
-
-    const [form, setForm] = useState({
-        outingplace_name: "",
-        accomanying_teacher: "",
-        reason: "",
-        visiting_date: "",
-        visiting_time: ""
-    });
-
-    const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
+    const handleAction = async (id, status) => {
         try {
-            setLoading(true);
+            setLoadingId(id);
 
-            const res = await createOutingRequest({
-                sid: student?.id,
-                db_school: 2,
-                ...form
+            const res = await updateOutingStatus({
+                id,
+                status,
+                db_school: 2
             });
 
-            if (res.status) {
+            if (res.success) {
                 toast.success(res.message);
-                await refreshOutingPass();
-                onClose();
+                refreshOuting();
             } else {
                 toast.error(res.message);
             }
 
         } catch (err) {
-            toast.error("Something went wrong");
+            toast.error("Action failed");
         } finally {
-            setLoading(false);
+            setLoadingId(null);
         }
     };
 
     return (
-        <div className="fixed inset-0 bg-black/40 flex items-end justify-center z-9990">
+        <div className="container-padding">
 
-            <div className="w-full max-w-md bg-white rounded-t-[28px] p-5">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-semibold">Outing Requests</h2>
+                <span className="text-xs text-gray-500">
+                    {pending.length} pending
+                </span>
+            </div>
 
-                <div className="flex justify-between mb-4">
-                    <h2 className="text-lg font-semibold">New Outing Request</h2>
-                    <button onClick={onClose}>✕</button>
+            {/* 🎨 Gradient Card (Main Highlight) */}
+            <div className="relative rounded-[28px] p-5 overflow-hidden mb-4
+        bg-gradient-to-br from-[#FF8A65] via-[#FF7043] to-[#F4511E] text-white shadow-md"
+            >
+
+                {/* Glow */}
+                <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/20 rounded-full blur-3xl" />
+
+                {/* Arrow */}
+                <div className="absolute top-4 right-4 w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+                    <ArrowUpRight size={18} />
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="relative z-10">
 
-                    {/* <input
-                        name="outingplace_name"
-                        placeholder="Outing Place"
-                        onChange={handleChange}
-                        className="input"
-                    /> */}
-
-                    <div className="relative">
-                        <label className="text-sm text-label">Outing Place</label>
-                        <input
-                            type="text"
-                            name="outingplace_name"
-                            onChange={handleChange}
-                            className='w-full h-14 bg-input-bg border border-primary rounded-[14px] px-4 pr-12 mt-1 mb-1 outline-none focus:ring-2 focus:ring-primary/40'
-                            placeholder="Enter outing place"
-                        />
+                    {/* Title */}
+                    <div className="flex items-center gap-3 mb-3">
+                        <Bus size={28} />
+                        <h2 className="text-xl font-semibold">
+                            Student Outings
+                        </h2>
                     </div>
 
-                    <input
-                        name="accomanying_teacher"
-                        placeholder="Accompanying Teacher"
-                        onChange={handleChange}
-                        className="input"
-                    />
+                    {/* Description */}
+                    <p className="text-sm text-white/90 mb-4 max-w-[85%]">
+                        Manage and respond to outing requests sent by school administration.
+                    </p>
 
-                    <div className="relative">
-                        <label className="text-sm text-label">Accompanying Teacher</label>
-                        <input
-                            type="text"
-                            name="accomanying_teacher"
-                            onChange={handleChange}
-                            className='w-full h-14 bg-input-bg border border-primary rounded-[14px] px-4 pr-12 mt-1 mb-1 outline-none focus:ring-2 focus:ring-primary/40'
-                            placeholder="Enter accompanying teacher name"
-                        />
+                    {/* Stats */}
+                    <div className="flex gap-6 text-sm">
+                        <div>
+                            <p className="font-semibold">{pending.length}</p>
+                            <p className="text-white/80 text-xs">Pending</p>
+                        </div>
+                        <div>
+                            <p className="font-semibold">{approved.length}</p>
+                            <p className="text-white/80 text-xs">Approved</p>
+                        </div>
+                        <div>
+                            <p className="font-semibold">{rejected.length}</p>
+                            <p className="text-white/80 text-xs">Rejected</p>
+                        </div>
                     </div>
 
-
-                    <input
-                        name="reason"
-                        placeholder="Reason"
-                        onChange={handleChange}
-                        className="input"
-                    />
-
-                    <div className="relative">
-                        <label className="text-sm text-label">Reason</label>
-                        <input
-                            type="text"
-                            name="reason"
-                            onChange={handleChange}
-                            className='w-full h-14 bg-input-bg border border-primary rounded-[14px] px-4 pr-12 mt-1 mb-1 outline-none focus:ring-2 focus:ring-primary/40'
-                            placeholder="Enter reason for outing"
-                        />
-                    </div>
-
-                    {/* <input
-                        type="date"
-                        name="visiting_date"
-                        onChange={handleChange}
-                        className="input"
-                    /> */}
-
-                    <div className="relative">
-                        <label className="text-sm text-label">Visiting Date</label>
-                        <input
-                            type="date"
-                            name="visiting_date"
-                            onChange={handleChange}
-                            className="w-full h-14 bg-input-bg border border-primary rounded-[14px] px-4 outline-none"
-                        />
-                    </div>
-
-                    {/* <input
-                        type="time"
-                        name="visiting_time"
-                        onChange={handleChange}
-                        className="input"
-                    /> */}
-
-                    <div className="relative">
-                        <label className="text-sm text-label">Visiting Time</label>
-                        <input
-                            type="time"
-                            name="visiting_time"
-                            onChange={handleChange}
-                            className='w-full h-14 bg-input-bg border border-primary rounded-[14px] px-4 mt-1 mb-1 outline-none focus:ring-2 focus:ring-primary/40'
-                            placeholder="Select Time"
-                        />
-                    </div>
-
-                    {loading ? <Loader /> : (
-                        <button className="w-full bg-primary text-white py-3 rounded-full">
-                            Submit
-                        </button>
-                    )}
-
-                </form>
+                </div>
             </div>
+
+            {/* 📦 Pending Requests List */}
+            <div className="flex flex-col gap-3 ">
+
+                {pending.length === 0 ? (
+                    <p className="text-sm text-gray-500 text-center">
+                        No pending requests
+                    </p>
+                ) : (
+                    pending.map((item) => (
+                        <div
+                            key={item.id}
+                            className="bg-primary/30 border rounded-3xl p-4 shadow-sm"
+                        >
+
+                            {/* Top */}
+                            <div className="flex justify-between items-center mb-2">
+                                <p className="font-semibold text-gray-800">
+                                    {item.outingplace_name}
+                                </p>
+
+                                <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full">
+                                    Pending
+                                </span>
+                            </div>
+
+                            {/* Info */}
+                            <div className="text-sm text-gray-600 space-y-1 mb-3">
+                                <p>📅 {item.visiting_date} • ⏰ {item.visiting_time}</p>
+                                <p>👨‍🏫 {item.accomanying_teacher || "N/A"}</p>
+                                <p>📝 {item.reason || "No reason provided"}</p>
+                            </div>
+
+                            {/* Actions */}
+                            <div className="flex gap-2">
+                                <button
+                                    disabled={loadingId === item.id}
+                                    onClick={() => handleAction(item.id, "approved")}
+                                    className="flex-1 bg-green-500 text-white text-sm py-2 rounded-xl"
+                                >
+                                    {loadingId === item.id ? "..." : "Approve"}
+                                </button>
+
+                                <button
+                                    disabled={loadingId === item.id}
+                                    onClick={() => handleAction(item.id, "rejected")}
+                                    className="flex-1 bg-red-500 text-white text-sm py-2 rounded-xl"
+                                >
+                                    {loadingId === item.id ? "..." : "Reject"}
+                                </button>
+                            </div>
+
+                        </div>
+                    ))
+                )}
+
+            </div>
+
         </div>
     );
 };
+
+export default OutingReqSection;

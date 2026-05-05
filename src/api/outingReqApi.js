@@ -1,52 +1,81 @@
 import axios from "axios";
 
-const BASE_URL = "https://lbsschool.in/old/lms/MobileAppBackend";
+// 🔹 Base URL (change this)
+const BASE_URL = "https://lbsschool.in/old/lms/MobileAppBackend/"; 
 
-// ===============================
-// ✅ Create Outing Request
-// ===============================
-export const createOutingRequest = async (data) => {
-    try {
-        const res = await axios.post(`${BASE_URL}/outingReq.php`, data, {
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
+// 🔹 Axios instance
+const api = axios.create({
+  baseURL: BASE_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
 
-        return res.data;
-    } catch (error) {
-        console.error("Create Outing Error:", error);
-        return {
-            status: false,
-            message: "Network error while creating outing request",
-        };
+// =====================================================
+// ✅ Fetch Outing Requests
+// =====================================================
+export const fetchOutingRequests = async ({ sid, db_school }) => {
+  try {
+    const res = await api.post("fetchOutingRequests.php", {
+      sid,
+      db_school: 2, // 🔥 Hardcoded for now, change if needed
+    });
+
+    // console.log(res.data);
+
+    if (res.data?.status) {
+      return {
+        success: true,
+        data: res.data,
+      };
+    } else {
+      return {
+        success: false,
+        message: res.data?.message || "Failed to fetch outing requests",
+      };
     }
+  } catch (error) {
+    console.error("Fetch Outing Error:", error);
+    return {
+      success: false,
+      message: error.message,
+    };
+  }
 };
 
-// ===============================
-// ✅ Fetch Outing Requests
-// ===============================
-export const fetchOutingRequest = async (sid, db_school = 2) => {
-    try {
-        const res = await axios.post(`${BASE_URL}/fetchOutingPass.php`, {
-            sid,
-            db_school,
-        }, {
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
+// =====================================================
+// ✅ Update Outing Status (Approve / Reject)
+// =====================================================
+export const updateOutingStatus = async ({
+  id,
+  status,
+  remark = "",
+  db_school,
+}) => {
+  try {
+    const res = await api.post("updateOutingStatus.php", {
+      id,
+      status,
+      remark,
+      db_school,
+    });
 
-        return res.data;
-    } catch (error) {
-        console.error("Fetch Outing Error:", error);
-        return {
-            status: false,
-            message: "Network error while fetching outing requests",
-            pending: [],
-            approved: [],
-            rejected: [],
-            all: [],
-        };
+    if (res.data?.status) {
+      return {
+        success: true,
+        message: res.data.message,
+      };
+    } else {
+      return {
+        success: false,
+        message: res.data?.message || "Update failed",
+      };
     }
+  } catch (error) {
+    console.error("Update Outing Error:", error);
+    return {
+      success: false,
+      message: error.message,
+    };
+  }
 };

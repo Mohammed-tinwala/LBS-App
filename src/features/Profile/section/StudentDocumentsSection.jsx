@@ -1,91 +1,197 @@
 import { useState } from "react";
-import { Upload, CheckCircle2, AlertCircle, FileText } from "lucide-react";
+import {
+    Upload,
+    CheckCircle2,
+    AlertCircle,
+    FileText,
+    XCircle
+} from "lucide-react";
+import { uploadStudentDocument } from "../../../api/studentDocument";
+import { toast } from "react-hot-toast";
+import { useAuth } from "../../../context/AuthContext";
 
-const StudentDocumentsSection = () => {
-    const [documents, setDocuments] = useState([
-        { id: 1, name: "Aadhaar Card", uploaded: false },
-        { id: 2, name: "Transfer Certificate", uploaded: true },
-        { id: 3, name: "Passport Size Photo", uploaded: false },
-    ]);
+const StudentDocumentsSection = ({
+    profile,
+    documents = [],
+    loading = false,
+    refreshDocuments
+}) => {
 
-    const handleUpload = (id, file) => {
+    const { student } = useAuth();
+
+    const [uploadingId, setUploadingId] = useState(null);
+
+    // 📌 Required documents list
+    const requiredDocs = [
+        { key: "aadhaar", label: "Aadhaar Card" },
+        { key: "tc", label: "Transfer Certificate" },
+        { key: "photo", label: "Passport Size Photo" },
+    ];
+
+    // 🔍 Map API docs
+    const mappedDocs = requiredDocs.map((doc) => {
+        const found = documents.find(
+            (d) => d.document_type === doc.key
+        );
+
+        return {
+            ...doc,
+            file: found?.file_path || null,
+            status: found?.status ?? null, // 0,1,2
+        };
+    });
+
+    // 📤 Upload handler
+
+    const handleUpload = async (doc, file) => {
         if (!file) return;
 
-        setDocuments((prev) =>
-            prev.map((doc) =>
-                doc.id === id ? { ...doc, uploaded: true } : doc
-            )
+        try {
+            const res = await uploadStudentDocument({
+                student_id: student?.id,   // 🔥 REQUIRED
+                document_type: doc.name,   // 🔥 REQUIRED
+                file: file                 // 🔥 REQUIRED
+            });
+
+            if (res.status) {
+                alert("Uploaded successfully ✅");
+                refreshDocuments(); // reload from API
+            } else {
+                alert(res.message);
+            }
+
+        } catch (err) {
+            console.error(err);
+            alert("Upload failed");
+        }
+    };
+
+    // 🎨 Status UI
+    const renderStatus = (status) => {
+        if (status === 1) {
+            return (
+                <>
+                    <CheckCircle2 size={14} className="text-green-500" />
+                    <span className="text-green-500">Approved</span>
+                </>
+            );
+        }
+
+        if (status === 2) {
+            return (
+                <>
+                    <XCircle size={14} className="text-red-500" />
+                    <span className="text-red-500">Rejected</span>
+                </>
+            );
+        }
+
+        if (status === 0) {
+            return (
+                <>
+                    <AlertCircle size={14} className="text-yellow-500" />
+                    <span className="text-yellow-500">Pending</span>
+                </>
+            );
+        }
+
+        return (
+            <>
+                <AlertCircle size={14} className="text-red-500" />
+                <span className="text-red-500">Missing</span>
+            </>
         );
     };
 
-    const missingDocs = documents.filter((doc) => !doc.uploaded);
+    // ❗ Missing docs
+    const missingDocs = mappedDocs.filter((d) => !d.file);
 
     return (
         <div className="container-padding">
 
-            {/* Sub heading */}
+            {/* Header */}
             <div className="flex items-center justify-between w-full mb-4">
                 <h2 className="text-lg font-semibold">Student Documents</h2>
                 <p className="text-xs font-normal">See more</p>
             </div>
 
-            {/* Document Cards */}
-            <div className="space-y-3">
+            {/* Loader */}
+            {loading ? (
+                <p className="text-sm text-gray-400">Loading...</p>
+            ) : (
+                <div className="space-y-3">
 
-                {documents.map((doc) => (
-                    <div
-                        key={doc.id}
-                        className="flex items-center justify-between bg-white rounded-2xl p-4 shadow-sm border border-primary/30"
-                    >
+                    {mappedDocs.map((doc) => (
+                        <div
+                            key={doc.key}
+                            className="flex items-center justify-between bg-white rounded-2xl p-4 shadow-sm border border-primary/30"
+                        >
 
-                        {/* Left */}
-                        <div className="flex items-center gap-3">
+                            {/* Left */}
+                            <div className="flex items-center gap-3">
 
-                            <div className="w-10 h-10 flex items-center justify-center rounded-xl bg-primary/10">
-                                <FileText size={18} className="text-primary" />
-                            </div>
+                                <div className="w-10 h-10 flex items-center justify-center rounded-xl bg-primary/10">
+                                    <FileText size={18} className="text-primary" />
+                                </div>
 
-                            <div>
-                                <p className="text-sm font-medium">{doc.name}</p>
+                                <div>
+                                    <p className="text-sm font-medium">
+                                        {doc.label}
+                                    </p>
 
-                                <div className="flex items-center gap-1 text-xs mt-1">
-                                    {doc.uploaded ? (
-                                        <>
-                                            <CheckCircle2 className="text-green-500" size={14} />
-                                            <span className="text-green-500">Uploaded</span>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <AlertCircle className="text-red-500" size={14} />
-                                            <span className="text-red-500">Missing</span>
-                                        </>
-                                    )}
+                                    <div className="flex items-center gap-1 text-xs mt-1">
+                                        {renderStatus(doc.status)}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        {/* Upload Button */}
-                        <label className="cursor-pointer">
-                            <input
-                                type="file"
-                                className="hidden"
-                                onChange={(e) =>
-                                    handleUpload(doc.id, e.target.files[0])
-                                }
-                            />
-                            <div className="flex items-center gap-2 bg-primary text-white px-3 py-2 rounded-full text-sm">
-                                <Upload size={14} />
-                                {doc.uploaded ? "Replace" : "Upload"}
+                            {/* Right */}
+                            <div className="flex items-center gap-2">
+
+                                {/* 👁 View */}
+                                {doc.file && (
+                                    <a
+                                        href={`https://lbsschool.in/old/lms/MobileAppBackend/${doc.file}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-xs text-blue-500 underline"
+                                    >
+                                        View
+                                    </a>
+                                )}
+
+                                {/* 📤 Upload */}
+                                <label className="cursor-pointer">
+                                    <input
+                                        type="file"
+                                        className="hidden"
+                                        onChange={(e) =>
+                                            handleUpload(doc.key, e.target.files[0])
+                                        }
+                                    />
+
+                                    <div className={`flex items-center gap-2 px-3 py-2 rounded-full text-sm text-white 
+                                        ${uploadingId === doc.key ? "bg-gray-400" : "bg-primary"}
+                                    `}>
+                                        <Upload size={14} />
+                                        {uploadingId === doc.key
+                                            ? "Uploading..."
+                                            : doc.file
+                                                ? "Replace"
+                                                : "Upload"}
+                                    </div>
+                                </label>
+
                             </div>
-                        </label>
 
-                    </div>
-                ))}
-            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
 
-            {/* Warning Box */}
+            {/* ⚠ Missing Warning */}
             {missingDocs.length > 0 && (
-                <div className="bg-red-50 border border-red-200 rounded-2xl p-4 flex gap-3 mt-2">
+                <div className="bg-red-50 border border-red-200 rounded-2xl p-4 flex gap-3 mt-4">
 
                     <AlertCircle className="text-red-500 mt-1" />
 
@@ -95,7 +201,7 @@ const StudentDocumentsSection = () => {
                         </p>
                         <p className="text-xs text-red-500 mt-1">
                             Please upload:{" "}
-                            {missingDocs.map((d) => d.name).join(", ")}
+                            {missingDocs.map((d) => d.label).join(", ")}
                         </p>
                     </div>
                 </div>

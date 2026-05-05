@@ -12,18 +12,19 @@ import GatePassSection from './sections/GatePassSection';
 import AcademicsSection from './sections/AcademicsSection';
 import ENotesSummaryCard from './sections/ENotesSummaryCard';
 import DailyLearningSummaryCard from './sections/DailyLearningSummaryCard';
+import OutingReqSection from './sections/OutingReqSection';
 
 import { useAuth } from '../../context/AuthContext'
 import { getMedicalData } from '../../api/medicalApi'
 import { fetchAdmitCard } from '../../api/admitCardApi';
-import { fetchGatePass } from '../../api/gatePassApi';   // ✅ NEW IMPORT
+import { fetchGatePass } from '../../api/gatePassApi';   
 import { fetchAllSubjects, fetchENotes } from '../../api/eNotesApi';
 import { fetchDailyLearning } from '../../api/dailyLearningApi';
 import { fetchHostelMenu } from '../../api/hostelMenuApi';
 import { fetchMentorMenteeMeetings } from '../../api/mentormenteeMeeting';
 import { fetchVisitorPass } from '../../api/visitorPassApi';
-import { fetchOutingRequest } from '../../api/outingReqApi';
 import { fetchStudentAttendance } from '../../api/studentAttendanceApi';
+import { fetchOutingRequests } from '../../api/outingReqApi';
 
 import { toast } from 'react-hot-toast'
 import { all } from 'axios';
@@ -183,22 +184,22 @@ const Home = () => {
   // Outing Pass Api
   // =========================
 
-  const loadOutingPass = async () => {
-    try {
-      const res = await fetchOutingRequest(student.id, 2);
+  // const loadOutingPass = async () => {
+  //   try {
+  //     const res = await fetchOutingRequest(student.id, 2);
 
-      if (res.status) {
-        setOutingPasses({
-          pending: res.pending || [],
-          approved: res.approved || [],
-          rejected: res.rejected || [],
-          all: res.all || []
-        });
-      }
-    } catch (err) {
-      toast.error("Failed to load outing requests");
-    }
-  };
+  //     if (res.status) {
+  //       setOutingPasses({
+  //         pending: res.pending || [],
+  //         approved: res.approved || [],
+  //         rejected: res.rejected || [],
+  //         all: res.all || []
+  //       });
+  //     }
+  //   } catch (err) {
+  //     toast.error("Failed to load outing requests");
+  //   }
+  // };
 
   useEffect(() => {
     if (student?.id) loadOutingPass();
@@ -397,6 +398,34 @@ const Home = () => {
     }
   }, [student]);
 
+  // =========================
+  // 🚀 Outing Pass API
+  // =========================
+
+  const loadOutingPass = async () => {
+    try {
+      const res = await fetchOutingRequests({
+        sid: student.id,
+        db_school: 2
+      });
+
+      if (res.success) {
+        const data = res.data;
+
+        setOutingPasses({
+          pending: data.pending || [],
+          approved: data.approved || [],
+          rejected: data.rejected || [],
+          all: data.all || []
+        });
+      } else {
+        toast.error(res.message || "Failed to load outing requests");
+      }
+    } catch (err) {
+      toast.error("Failed to load outing requests");
+    }
+  };
+
   return (
     <>
       <div className='flex flex-col gap-6 pt-4 pb-28'>
@@ -466,6 +495,14 @@ const Home = () => {
           rejected={visitorPasses.rejected}
           all={visitorPasses.all}
           refreshVisitorPass={loadVisitorPass}
+        />
+
+        <OutingReqSection
+          pending={outingPasses.pending}
+          approved={outingPasses.approved}
+          rejected={outingPasses.rejected}
+          all={outingPasses.all}
+          refreshOuting={loadOutingPass}
         />
 
 
