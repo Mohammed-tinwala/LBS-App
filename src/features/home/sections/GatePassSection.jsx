@@ -5,6 +5,7 @@ import { createGatePass, fetchGatePass } from "../../../api/gatePassApi";
 import Loader from "../../../components/loader/Loader";
 import { useAuth } from "../../../context/AuthContext";
 import { toast } from "react-hot-toast";
+import { createPortal } from "react-dom";
 
 const GatePassSection = ({ pending = [], approved = [], rejected = [], all = [], refreshGatePass }) => {
     const [open, setOpen] = useState(false);
@@ -84,12 +85,13 @@ const GatePassSection = ({ pending = [], approved = [], rejected = [], all = [],
             </div>
 
             {/* Modal */}
-            {open && (
+            {open && createPortal(
                 <GatePassModal
                     student={student}
                     onClose={() => setOpen(false)}
                     refreshGatePass={refreshGatePass}
-                />
+                />,
+                document.body
             )}
         </div>
     );
@@ -151,7 +153,7 @@ const GatePassModal = ({ onClose, student, refreshGatePass }) => {
 
 
     return (
-        <div className="fixed inset-0 bg-black/40 flex items-end justify-center z-9990">
+        <div className="fixed inset-0 bg-black/40 flex items-end justify-center z-[9999]">
 
             <div className="w-full max-w-md bg-white rounded-t-[28px] p-5">
 

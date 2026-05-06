@@ -5,6 +5,7 @@ import { createVisitorPass } from "../../../api/visitorPassApi";
 import Loader from "../../../components/loader/Loader";
 import { useAuth } from "../../../context/AuthContext";
 import { toast } from "react-hot-toast";
+import { createPortal } from "react-dom";
 
 const VisitorPassSection = ({
     pending = [],
@@ -88,11 +89,12 @@ const VisitorPassSection = ({
             </div>
 
             {/* Modal */}
-            {open && (
+            {open && createPortal(
                 <VisitorPassModal
                     onClose={() => setOpen(false)}
                     refreshVisitorPass={refreshVisitorPass}
-                />
+                />,
+                document.body
             )}
         </div>
     );
@@ -151,7 +153,7 @@ const VisitorPassModal = ({ onClose, refreshVisitorPass }) => {
     };
 
     return (
-        <div className="fixed inset-0 bg-black/40 flex items-end justify-center z-9990">
+        <div className="fixed inset-0 bg-black/40 flex items-end justify-center z-[9999]">
 
             <div className="w-full max-w-md bg-white rounded-t-[28px] p-5">
 

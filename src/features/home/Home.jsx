@@ -13,6 +13,7 @@ import AcademicsSection from './sections/AcademicsSection';
 import ENotesSummaryCard from './sections/ENotesSummaryCard';
 import DailyLearningSummaryCard from './sections/DailyLearningSummaryCard';
 import OutingReqSection from './sections/OutingReqSection';
+import { createPortal } from "react-dom";
 
 import { useAuth } from '../../context/AuthContext'
 import { getMedicalData } from '../../api/medicalApi'
