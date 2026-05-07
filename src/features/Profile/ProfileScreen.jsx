@@ -68,10 +68,6 @@ const ProfileScreen = () => {
         }
     }, [profile]);
 
-    // =========================
-    // 🎯 CONDITIONAL RENDERING (AFTER HOOKS)
-    // =========================
-
     if (loading) {
         return <AppLoader />;
     }
@@ -88,9 +84,6 @@ const ProfileScreen = () => {
         return <AppLoader />;
     }
 
-    // =========================
-    // ✅ MAIN UI
-    // =========================
     return (
         <div className='flex flex-col gap-4 bg-primary pt-4 min-h-screen'>
 
@@ -109,7 +102,10 @@ const ProfileScreen = () => {
                     refreshDocuments={loadDocuments}
                 />
 
-                <HostelRoomSection />
+                {student?.is_hostelite === 1 && (
+                    <HostelRoomSection />
+                )}
+
                 <GeneralInfoSection profile={profile} />
                 <LogoutSection />
 

@@ -18,7 +18,7 @@ import { createPortal } from "react-dom";
 import { useAuth } from '../../context/AuthContext'
 import { getMedicalData } from '../../api/medicalApi'
 import { fetchAdmitCard } from '../../api/admitCardApi';
-import { fetchGatePass } from '../../api/gatePassApi';   
+import { fetchGatePass } from '../../api/gatePassApi';
 import { fetchAllSubjects, fetchENotes } from '../../api/eNotesApi';
 import { fetchDailyLearning } from '../../api/dailyLearningApi';
 import { fetchHostelMenu } from '../../api/hostelMenuApi';
@@ -38,7 +38,7 @@ const Home = () => {
 
   const [medical, setMedical] = useState(null);
   const [admitCard, setAdmitCard] = useState(null);
-  const [allSubjects, setAllSubjects] = useState([]); // ✅ Store all subjects for E-Notes filtering
+  const [allSubjects, setAllSubjects] = useState([]);
   const [eNotes, setENotes] = useState([]);
   const [dailyLearning, setDailyLearning] = useState([]);
   const [hostelMenu, setHostelMenu] = useState([]);
@@ -81,6 +81,7 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
 
   const { student } = useAuth();
+  // console.log(student.is_hostelite);
 
   // =========================
   // Medical API
@@ -432,33 +433,43 @@ const Home = () => {
       <div className='flex flex-col gap-6 pt-4 pb-28'>
 
         <HomeHeader name="Rohan Sharma" />
-        <HostelMenuu data={hostelMenu} />
+        {student?.is_hostelite === 1 && (
+          <HostelMenuu data={hostelMenu} />
+        )}
+
         <QuickStats />
-        <DailyLearningSummaryCard
-          data={dailyLearning}
-        />
+
+        {student?.is_allenite === 0 && (
+          <DailyLearningSummaryCard
+            data={dailyLearning}
+          />
+        )}
 
         <AcademicsSection
           admitCard={admitCard}
           loading={loading}
         />
 
-        <ENotesSummaryCard
-          totalNotes={totalNotes}
-          subjects={totalSubjects}
-          recentNotes={recentNotes}
-          eNotes={eNotes}
-          allSubjects={allSubjects}
-        />
+        {student?.is_allenite === 0 && (
+          <ENotesSummaryCard
+            totalNotes={totalNotes}
+            subjects={totalSubjects}
+            recentNotes={recentNotes}
+            eNotes={eNotes}
+            allSubjects={allSubjects}
+          />
+        )}
 
-        <MentorMentee
-          data={mentorMeetings}
-          loading={mentorLoading}
-        />
+        {student?.is_allenite === 0 && (
+          <MentorMentee
+            data={mentorMeetings}
+            loading={mentorLoading}
+          />
+        )}
 
-        <HostelRoomSection />
-
-        {/* <HostelMenu /> */}
+        {student?.is_hostelite === 1 && (
+          <HostelRoomSection />
+        )}
 
         <HealthSection
           score={medical?.overall_health_score}
@@ -470,7 +481,10 @@ const Home = () => {
         />
 
         <EVideosSection />
-        <CallingSection />
+
+        {student?.is_hostelite === 1 && (
+          <CallingSection />
+        )}
 
         <AttendanceSection
           data={attendanceData}
@@ -482,32 +496,35 @@ const Home = () => {
         <GallerySection />
         <PTMSlotSection />
 
-        <GatePassSection
-          pending={gatePasses.pending}
-          approved={gatePasses.approved}
-          rejected={gatePasses.rejected}
-          all={gatePasses.all}
-          refreshGatePass={loadGatePass}
-        />
+        {student?.is_hostelite === 1 && (
+          <GatePassSection
+            pending={gatePasses.pending}
+            approved={gatePasses.approved}
+            rejected={gatePasses.rejected}
+            all={gatePasses.all}
+            refreshGatePass={loadGatePass}
+          />
+        )}
 
-        <VisitorPassSection
-          pending={visitorPasses.pending}
-          approved={visitorPasses.approved}
-          rejected={visitorPasses.rejected}
-          all={visitorPasses.all}
-          refreshVisitorPass={loadVisitorPass}
-        />
+        {student?.is_hostelite === 1 && (
+          <VisitorPassSection
+            pending={visitorPasses.pending}
+            approved={visitorPasses.approved}
+            rejected={visitorPasses.rejected}
+            all={visitorPasses.all}
+            refreshVisitorPass={loadVisitorPass}
+          />
+        )}
 
-        <OutingReqSection
-          pending={outingPasses.pending}
-          approved={outingPasses.approved}
-          rejected={outingPasses.rejected}
-          all={outingPasses.all}
-          refreshOuting={loadOutingPass}
-        />
-
-
-
+        {student?.is_hostelite === 1 && (
+          <OutingReqSection
+            pending={outingPasses.pending}
+            approved={outingPasses.approved}
+            rejected={outingPasses.rejected}
+            all={outingPasses.all}
+            refreshOuting={loadOutingPass}
+          />
+        )}
 
       </div>
     </>

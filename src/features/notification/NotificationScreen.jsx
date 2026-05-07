@@ -123,7 +123,7 @@ const NotificationScreen = () => {
 
       ) : (
 
-        <div className="mt-2 space-y-8 px-4">
+        <div className="mt-2 space-y-8 px-4 container-padding">
 
           {notifications.map((group) => (
             <div key={group.section}>

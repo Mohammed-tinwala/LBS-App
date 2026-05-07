@@ -79,7 +79,6 @@ const FeeDetailScreen = () => {
 
             <PageHeader title="Fee Detail Page" color="white" />
 
-            {/* ✅ Main Content */}
             <div className='flex flex-col gap-4 pb-40 bg-white py-4 mt-4 rounded-t-[50px]'>
 
                 <ProfileHeader about="hidden" profile={profile} />
@@ -89,7 +88,7 @@ const FeeDetailScreen = () => {
                     loading={feeLoading}
                 />
 
-                <FeeBreakdown sessions={feeDetails?.sessions} />
+                {/* <FeeBreakdown sessions={feeDetails?.sessions} /> */}
 
                 <FeeInstallmentsSection sessions={feeDetails?.sessions} />
 

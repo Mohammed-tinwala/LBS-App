@@ -21,7 +21,7 @@ const PaymentInfoSection = () => {
             </div>
 
             <div className='flex flex-col sm:flex-row items-center gap-4 sm:gap-2 justify-between'>
-                <div className='bg-[#FFCECE] rounded-2xl p-4 '>
+                <div className='w-full bg-[#FFCECE] rounded-2xl p-4 '>
                     <div className='w-full flex items-center justify-between'>
                         <div className='flex flex-col items-start'>
                             <span className='text-[12px] text-label font-medium'>Your</span>
@@ -32,13 +32,13 @@ const PaymentInfoSection = () => {
                         </div>
                     </div>
 
-                    <p className='text-black w-3/4 text-[12px] line-clamp-2 font-normal'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni nulla praesentium nesciunt!</p>
+                    {/* <p className='text-black w-3/4 text-[12px] line-clamp-2 font-normal'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni nulla praesentium nesciunt!</p> */}
                     <button onClick={handleFeeClick} className='text-[12px] flex items-center gap-1 text-black font-medium mt-4'>
                         See More
                         <ArrowUpRight size={18} />
                     </button>
                 </div>
-                <div className='bg-[#B7FFD1] rounded-2xl p-4 '>
+                <div className='w-full bg-[#B7FFD1] rounded-2xl p-4 '>
                     <div className='w-full flex items-center justify-between'>
                         <div className='flex flex-col items-start'>
                             <span className='text-[12px] text-label font-medium'>Your</span>
@@ -49,7 +49,7 @@ const PaymentInfoSection = () => {
                         </div>
                     </div>
 
-                    <p className='text-black w-3/4 text-[12px] line-clamp-2 font-normal'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni nulla praesentium nesciunt!</p>
+                    {/* <p className='text-black w-3/4 text-[12px] line-clamp-2 font-normal'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni nulla praesentium nesciunt!</p> */}
                     <button className='text-[12px] flex items-center gap-1 text-black font-medium mt-4'>
                         See More
                         <ArrowUpRight size={18} />
